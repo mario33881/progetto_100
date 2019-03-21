@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <title>Progetto 100+100</title>
+    <link rel="shortcut icon" href="/static/img/favicon.png" type="image/png" /> <!-- icona webapp -->
+
+    <!-- -- -- -- -- -- -- -- -- -- -- CSS -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+    
+    <!-- MATERIALIZE-->
+    <link href="/static/css/materialize.min.css" rel="stylesheet"> <!-- per calendario e selettore ore/minuti -->
+    
+    <!-- MDBOOTSTRAP -->
+    <link rel="stylesheet" href="../static/css/all.css">           <!-- FONT AWESOME per il font  -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">   <!-- Bootstrap core CSS        -->
+    <link href="/static/css/mdb.min.css" rel="stylesheet">         <!-- Material Design Bootstrap -->
+    
+    <!-- CSS statico aggiuntivo -->
+    <link rel="stylesheet" type='text/css' href="/static/css/main/style.css" />
+    
+    <!-- CSS "dinamico" (aggiuntivo) via PHP -->
+    <link rel="stylesheet" type='text/css' href="/static/css/infos/style.php" />       <!-- CSS pagina informazioni                   -->
+    <link rel="stylesheet" type='text/css' href="/static/css/infos/cm_style.php" />    <!-- CSS pagina informazioni colori sel. da DB -->
+    <link rel="stylesheet" type='text/css' href="/static/css/settings/cm_style.php" /> <!-- CSS pagina impostazioni colori sel. da DB -->
+
+</head>
+<body>
+    <!-- Contenitore vue -->
+    <div id="app">
+        <transition name="slide-fade">
+            <!-- Animazione cambio pagine -->
+            <router-view></router-view> <!-- Pagina visualizzata -->
+        </transition>
+    </div>
+
+    <!-- -- -- -- -- -- -- -- -- -- -- JS -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
+    <script>
+        var boold = true; // variabile debug per i console.log()
+    </script>
+
+    <!-- SCRIPT MATERIALIZE -->
+    <script type="text/javascript" src="/static/js/materialize/materialize.min.js"></script> <!-- per calendario e selettore ore/minuti -->
+
+    <!-- SCRIPTS MDBOOTSTRAP -->
+    <script type="text/javascript" src="/static/js/mdbootstrap/jquery-3.3.1.min.js"></script> <!-- JQuery                    -->
+    <script type="text/javascript" src="/static/js/mdbootstrap/popper.min.js"></script>       <!-- Bootstrap tooltips        -->
+    <script type="text/javascript" src="/static/js/mdbootstrap/bootstrap.min.js"></script>    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="/static/js/mdbootstrap/mdb.min.js"></script>          <!-- MDB core JavaScript       -->
+
+    <!-- Utility varie -->
+    <script src="/static/js/floorplan/svg.min.js"></script> <!-- Per mappa SVG       -->
+    <script src="/static/js/options/axios.min.js"></script> <!-- Per le HTTP request -->
+    <script src="/static/js/touch/hammer.min.js"></script>  <!-- Per il touch/swipe  -->
+    <script src="/static/js/timestamp/t2ts.js"></script>    <!-- Timestamp -> Data   -->
+
+    <!-- VUE -->
+    <script src="/static/js/vue/vue.min.js"></script>        <!-- Vue        -->
+    <script src="/static/js/vue/vue-router.min.js"></script> <!-- Vue router --> 
+
+    <!-- MAIN: il cuore del sistema Frontend -->
+    <script src="/static/js/main/home.js"></script>    <!-- Schermata principale   "Home"    -->
+    <script src="/static/js/main/graph.js"></script>   <!-- Schermata grafici      "Graph"   -->
+    <script src="/static/js/main/options.js"></script> <!-- Schermata opzioni      "Options" -->
+    <script src="/static/js/main/infos.js"></script>   <!-- Schermata informazioni "Infos"   -->
+    
+    <script>
+
+    const routes = [
+        // lista di routes/pagine
+        { path: '/', component: Home, data:true },                 // pagina principale   -> Home
+        { path: '/graph/:stanza', component: Graph, props: true }, // pagina grafici      -> Graph, accetta proprieta'/parametri
+        { path: '/options', component: Options },                  // pagina impotazioni  -> Options
+        { path: '/infos', component: Infos }                       // pagina informazioni -> Infos
+    ]
+    
+    const router = new VueRouter({
+        routes // routes configurate per router
+    })
+
+    const app = new Vue({
+        router            // uso router "router" in vue
+    }).$mount('#app')     // oggetto vue -> <div id="app"> </div>
+    
+    </script>
+</body>
+</html>
