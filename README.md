@@ -1,5 +1,5 @@
 # progetto_100
-Humidity and Temperature IoT network
+Humidity and Temperature IoT network (school project)
 
 ---
 
