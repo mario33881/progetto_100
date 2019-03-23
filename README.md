@@ -51,5 +51,9 @@ Work in progress
 **2019-03-21 01_01:** <br/>
 First commit
 
+## To do
+* OTA(over the air) updates
+* SPIFF + web server remote configuration
+
 ## Author
 Zenaro Stefano [(Github)](https://github.com/mario33881)
