@@ -80,10 +80,14 @@
 
 		// STRINGA SQL
 		if ($min_timestamp == 0 && $max_timestamp == 0){
-			// se entrambe le opzioni sono 0, prendo tutti i dati
-			$query = sprintf("SELECT measure_timestamp, id_node, celsius_temp, humidity
-												FROM `$t_dbtable`
-												ORDER BY measure_timestamp");
+			// se entrambe le opzioni sono 0, prendo gli ultimi 1200 record
+			$query = sprintf("SELECT measure_timestamp, id_node, celsius_temp, humidity 
+								FROM (SELECT measure_timestamp, id_node, celsius_temp, humidity
+										FROM `$t_dbtable`
+										ORDER BY measure_timestamp DESC
+										LIMIT 1200
+									) foo
+								ORDER BY measure_timestamp");
 		}
 
 		else{

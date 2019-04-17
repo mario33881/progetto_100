@@ -53,7 +53,8 @@ First commit
 
 ## To do
 * OTA(over the air) updates
-* SPIFF + web server remote configuration
+* SPIFFS + web server remote configuration
+* WIKI with more infos/instructions
 
 ## Author
 Zenaro Stefano [(Github)](https://github.com/mario33881)

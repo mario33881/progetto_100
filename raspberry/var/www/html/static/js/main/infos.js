@@ -168,7 +168,7 @@ const Infos = {
             <div style="height: 100vh; margin:0px;" class="jumbotron d-flex bg-color-infos align-items-center text-center">
                 <div class="container">
                     <div>
-                        <h1 id="title" class="w3-jumbo w3-animate-top">Gruppi 1 e 2</h1>
+                        <h1 id="title" class="w3-jumbo w3-animate-top">Marconi</h1>
                     </div>
 
                     <hr class="w3-border-grey" style="width:40%">
@@ -219,7 +219,7 @@ const Infos = {
         return {
             title: "Progetto 100+100",
             slogan: "Temperatura e umidita' al 100% sotto controllo",
-            persone: "Cipriani nicolas, Coltri andrea, Lopez sebastian, Perlati Matteo, Zenaro stefano"
+            persone: "Classe 4AT, anno scolastico 2018/2019"
         }
     }
 }
