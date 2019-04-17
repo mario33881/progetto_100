@@ -48,6 +48,10 @@ Work in progress
 
 ## Changelog
 
+**2019-04-17 01_02:** <br/>
+Changes:
+* Set limit of 1200 records
+
 **2019-03-21 01_01:** <br/>
 First commit
 
