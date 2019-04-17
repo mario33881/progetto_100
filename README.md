@@ -35,7 +35,11 @@ http://arduino.esp8266.com/stable/package_esp8266com_index.json
 1. Install Raspbian
 2. Install Hostapd, the software that creates the Access Point
 3. Install Apache, Mysql (PhpMyAdmin is also recommend)
-4. Import the sql file ```/raspberry/db100_100.sql``` using PhpMyAdmin
+4. Import the sql file ```/raspberry/db100_100.sql``` using PhpMyAdmin or by entering this command
+```
+mysql -u username -p < db100_100.sql 
+```
+> replace username with the username you want to log in with
 5. Put the ```/raspberry/var``` content inside the ```/var``` folder on the Raspberry Pi
 6. Change SSID and password of the database from the ```/var/credentials/credentials.ini``` file
 
