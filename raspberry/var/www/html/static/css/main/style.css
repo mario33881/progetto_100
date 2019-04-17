@@ -1,0 +1,168 @@
+#app{
+    /* Nascondo le pagine che stanno entrando */
+    overflow: hidden; 
+}
+
+.page{
+    /* Da usare per tutte le pagine */
+    position: absolute; /* Posizione assoluta per evitare effetto "bump/salto"            */
+    min-height: 100vh;  /* L'altezza della pagina deve essere minimo tutta pagina         */
+    width: 100vw;       /* La lunghezza della pagina deve essere sempre SOLO tutta pagina */
+}
+
+/* MAPPA */
+.floorplan{
+    height: 80vh; /* Altezza del div con mappa -> "centra" la mappa */
+}
+.floorplan > svg{
+    /* Mappa della casa */
+    width: 100%; 
+    height: 80%;
+    display: block; 
+    margin: auto; 
+}
+
+/* TITOLI */
+.title{
+    height: 10vh;
+    margin-bottom: 0;
+}
+.text-container{
+    display: flex;           /* Per centrare testo*/
+    justify-content: center; /* Per centrare testo*/
+    align-items: center;     /* Per centrare testo*/
+}
+
+/* Parte dei grafici */
+.graph-container{
+    height: 39vh;
+}
+
+/* Per avere pulsanti in Home mezza pagina l'uno */
+.halfpage{
+    width: 50vw;
+}
+
+@media only screen and (max-width: 365px){
+    /* media per schermi mobile small */
+    .title{
+        /* Titolo troppo grande su mobile (va su due righe...) 
+            Todo: Mobile first...
+        */
+        font-size: 2.0rem;
+    }
+}
+@media only screen and (max-height: 450px){
+    /* media per schermi mobile small */
+    .floorplan > svg{
+        /* Mappa della casa */
+        width: 90%; height: 100%;
+    }
+}
+
+@media only screen and (max-height: 380px){
+    /* media per schermi mobile small */
+    .floorplan > svg{
+        /* Mappa della casa */
+        width: 79%; height: 100%;
+    }
+}
+@media only screen and (max-height: 325px){
+    /* media per schermi mobile small */
+    .floorplan > svg{
+        /* Mappa della casa */
+        width: 65%; height: 100%;
+    }
+}
+
+@media only screen and (max-height: 450px) and (min-width: 800px){
+    /* media per schermi mobile small */
+    .floorplan > svg{
+        /* Mappa della casa */
+        width: 60%; height: 100%;
+    }
+}
+
+/*#######################################################################################################*/
+
+/* VUE TRANSITION - TRANSIZIONE TRA PAGINE */
+
+.slide-fade-enter-active {
+    transition: all .4s ease; /* .4 secondi per entrare */
+}
+.slide-fade-leave-active {
+    transition: all .4s;      /* .4 secondi per uscire */
+}
+
+.slide-fade-enter{
+    transform: translateX(100%); /* Transizione */
+    opacity: 0;
+}
+.slide-fade-leave-to{
+    transform: translateX(100%); /* Transizione */
+    opacity: 0;
+}
+
+/*#######################################################################################################*/
+
+/* IMPOSTAZIONI - CALENDARIO E SELETTORE DATA/ORA 
+   Togli da calendario e selettore data/ora la parte bianca che "esce" dallo schermo
+*/
+
+.modal {
+    bottom: unset;
+}
+
+/*#######################################################################################################*/
+
+/* IMPOSTAZIONI - SELEZIONE COLORE INTERFACCIA
+   quadrati colorati
+*/
+
+.square {
+    position: relative; /* posizione relativa */
+    width: 80%;         /* larghezza 80 % del parent (aggiunge )*/
+}
+  
+.square:after {
+    /* Clearfix */
+    content: "";
+    display: block;
+    padding-bottom: 100%;
+}
+  
+.content {
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center; /* Per centrare testo*/
+    align-items: center;     /* Per centrare testo*/
+}
+
+/*#######################################################################################################*/
+
+/* RIGA BIANCA NELLE INFORMAZIONI */
+
+.w3-border-grey{
+    background-color: white; 
+}
+
+/*#######################################################################################################*/
+
+/* TITOLI E PULSANTI PER ANDARE INDIETRO
+   Parte che centra il testo e allinea a sinistra il pulsante per tornare indietro 
+*/
+
+.align-left{
+    float:left !important; /* allinea a sinistra */ 
+}
+ 
+.center-text-vert{
+    line-height:30px;  /* altezza del pulsante */
+}
+
+.center {
+    text-align: center; /* testo centrato */
+    margin-right: 55px; /* margine da destra (e da sinistra) del pulsante */   
+} 
