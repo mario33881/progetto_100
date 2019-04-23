@@ -1,5 +1,5 @@
 # progetto_100
-Humidity and Temperature IoT network (school project)
+Humidity and Temperature monitoring system using an IoT network (school project)
 
 ---
 
@@ -28,20 +28,29 @@ http://arduino.esp8266.com/stable/package_esp8266com_index.json
 * Adafruit Unified Sensor by Adafruit
 * DHT Sensor Library by Adafruit
 10. Select the correct port under the Tools menu
-11. Change the variables values to your liking and upload the sketch to the board
+11. Change the variables values to your liking and upload the ```nodemcu_sketch/nodemcu_sketch.ino``` sketch to the board
 
 ### Raspberry pi
 
 1. Install Raspbian
-2. Install Hostapd, the software that creates the Access Point
-3. Install Apache, Mysql (PhpMyAdmin is also recommend)
-4. Import the sql file ```/raspberry/db100_100.sql``` using PhpMyAdmin or by entering this command
+2. Download this repository
+3. Go to the ```raspberry/auto``` folder and open the terminal
+4. Set the sh files as executable with this command:
 ```
-mysql -u username -p < db100_100.sql 
+find . -type f -iname "*.sh" -exec chmod +x {} \;
 ```
-> replace username with the username you want to log in with
-5. Put the ```/raspberry/var``` content inside the ```/var``` folder on the Raspberry Pi
-6. Change SSID and password of the database from the ```/var/credentials/credentials.ini``` file
+5. Change these variables to your liking in the ```autoinstall.sh``` file
+```
+mysqlpass : password for mysql (user is root)
+touchdevice : device with touch input
+hostapd_ip : static ip of raspberry pi
+hostapd_ssid : name of the Access Point
+hostapd_password : password to connect to the AP
+```
+6. Execute the file by entering this command:
+```
+./autoinstall.sh
+```
 
 ## Software map
 
@@ -51,6 +60,10 @@ Work in progress
 ![](https://github.com/mario33881/progetto_100/blob/master/images/frontend.png)
 
 ## Changelog
+
+**2019-04-23 01_03:** <br/>
+Features:
+* Added automatic installation script
 
 **2019-04-17 01_02:** <br/>
 Changes:
