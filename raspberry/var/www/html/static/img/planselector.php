@@ -44,21 +44,57 @@
     }
     
 
+    function join_paths() {
+        /**
+		 * Questa funzione concatena i parametri in un percorso.
+		 *
+		 * La funzione scorre i parametri passati alla funzione, 
+         * se non sono stringhe nulle le aggiunge in un array, 
+         * gli elementi dell'array verranno uniti con il separatore di sistema,
+         * infine verranno rimossi tutti i separatori di sistema doppi
+         *
+		 * @since 1.1.0
+         * 
+		 * @param string sono accettati piu' parametri stringhe
+		 * 
+		 * @return string percorso ottenuto concatenando i parametri
+        */
+
+        $paths = array(); // crea array
+    
+        foreach (func_get_args() as $arg) {
+            // per ogni argomento passato alla funzione
+            // se non vuoto, aggiungilo a paths
+            if ($arg !== '') { $paths[] = $arg; }
+        }
+        
+        // join unisce il contenuto di $paths
+        // preg_replace esegue Regular Expression (primo parametro RE, sostituto al pattern, stringa)
+        // + -> ricorrenze (/ , // , ///), # indica inizio e fine pattern
+        // DIRECTORY_SEPARATOR, separatore di sistema
+
+        return preg_replace('#' . DIRECTORY_SEPARATOR . '+#', DIRECTORY_SEPARATOR, join(DIRECTORY_SEPARATOR, $paths));
+    }
+
     $map_array = get_map($mysqli, $db_table);
 
     $map = $map_array[0]["map"]; // mappa selezionata dall'utente
     
-    if ($map == "colorful"){
-        // l'utente ha selezionato mappa "colorful"
-        echo readfile("colorful.svg");
-    }
-    elseif($map == "realistic"){
-        // l'utente ha selezionato mappa "realistic"
-        echo readfile("realistic.svg");
+    $mappath = join_paths(__DIR__, "maps", $map . ".svg"); // percorso mappa
+    if(file_exists($mappath)){
+        // se la mappa si trova nella cartella maps, controlla se svg
+
+        if (mime_content_type($mappath) === "image/svg+xml"){
+            echo readfile($mappath);
+        }
+        else{
+            echo "Il file non ha mime type = SVG";
+        }
+        
     }
     else{
         // qualcosa e' andato storto (DB manomesso/incompleto)
-        echo "mappa non trovata";
+        echo "mappa '" . htmlspecialchars($map) . "' non trovata";
     }
     
     // CHIUDI CONNESSIONE

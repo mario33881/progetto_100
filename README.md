@@ -61,6 +61,10 @@ Work in progress
 
 ## Changelog
 
+**2019-04-24 01_04:** <br/>
+Features:
+* Now you can add as many maps as you want in the /static/img/maps folder
+
 **2019-04-23 01_03:** <br/>
 Features:
 * Added automatic installation script

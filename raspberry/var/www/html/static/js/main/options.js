@@ -105,9 +105,9 @@ const Options = {
                 <h4 class="text-container">Tipo planimetria</h4>
                 <p class="text-center"> Premi sulla planimetria che vorresti nella pagina principale</p>
                 <div class="row">
-                    <div class="col-5 text-center"><p>Realistic</p><img v-on:click="realisticplanSelected" id="realisticplan" class="img-fluid" src="/static/img/realistic.svg"></div>
-                    <div class="col-2"></div>
-                    <div class="col-5 text-center"><p>Colorful</p><img v-on:click="colorfulplanSelected" id="colorfulplan" class="img-fluid" src="/static/img/colorful.svg"></div>
+                    <div v-for="(map, index) in maps" v-bind:class="mapclass(map)">
+                        <div v-on:click="sendmap(map)" v-html="mapcontent(map)"></div>
+                    </div>
                 </div>
                 
                 <hr>
@@ -427,13 +427,72 @@ const Options = {
             }
             return color;
         },
-        realisticplanSelected: function () {
-            axios.get("/static/php/sendmap.php?map=realistic");
-            this.showAlert("Hai selezionato la mappa 'realistic'", "success");
+        getmaps: function () {
+            /* Ottiene le mappe dal file e aggiunge "" per i separatori (div col-2) */
+            axios.get("/static/php/showmaps.php").then(resp => {
+                if (boold){
+                    console.log("Ho ricevuto queste mappe:");
+                    console.log(resp.data);
+                }
+
+                maps = resp.data;
+                i = 0;
+                col = 1;
+                while (i < maps.length){
+                    if (col == 2){
+                        maps.splice(i, 0, "");
+                    }
+
+                    col++
+                    
+                    if (col > 3){
+                        col = 1;
+                    }
+                    i++
+                }
+                if (boold){
+                    console.log("Mappe con separatori:");
+                    console.log(maps);
+                }
+                
+                this.maps = maps;
+            })
         },
-        colorfulplanSelected: function () {
-            axios.get("/static/php/sendmap.php?map=colorful");
-            this.showAlert("Hai selezionato la mappa 'colorful'", "success");
+        mapclass : function (map){
+            /* Gestisce la classe della mappa, se map == "" (separatore),
+               la classe e' 'col-2', altrimenti 'col-5' e 'text-center'
+            */
+            
+            mapclass = 'col-2';
+            
+            if (map != ""){
+                mapclass = 'col-5 text-center';
+            }
+            return mapclass;
+
+        },
+        mapcontent: function (map){
+            /* Gestisce il contenuto del div delle mappe
+               Se map != "" il contenuto e' un div che ha un paragrafo con il nome del file
+               e img con la mappa,
+
+               altrimenti il div viene lasciato vuoto
+            */
+
+            div = ""
+            if (map != ""){
+                div = '<div> <p>' + map.name + '</p> <img id="' + map.name + 'plan" class="img-fluid" src="' + map.path + '"></div>';
+            }
+            
+            return div
+        },
+        sendmap: function (map){
+            /* Gestisce click/touch delle mappe
+               quando una mappa viene premuta viene effettuata una get request
+               per salvare nel database la scelta dell'utente
+            */
+            axios.get("/static/php/sendmap.php?map=" + map.name);
+            this.showAlert("Hai selezionato la mappa '" + map.name + "'", "success");
         }
     },
     mounted: function () {
@@ -466,6 +525,8 @@ const Options = {
 
         this.spaceOnDisk(); // aggiunge grafico con spazio rimanente su disco
 
+        this.getmaps(); // ottiene il json con le mappe
+
     },
     data: function () {
         return {
@@ -476,6 +537,7 @@ const Options = {
             totime: "",        // orologio a
             nodes_data: null,  // json con RSSI
             colors: null,      // json con colori
+            maps: null,        // json con mappe
             num: 6             // numero colori da visualizzare
         }
     }

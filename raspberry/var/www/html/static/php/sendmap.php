@@ -9,7 +9,9 @@
 	* Poi viene fatta una prima misura di prevenzione da dati indesiderati con il typecast:
 	* il parametro deve essere una stringa.
 	*
-	* Se "map" e' "realistic" o "colorful" viene effettuata la connessione al DB, 
+	* Se "map" e' la proprieta' "nome" di una mappa presente nell'array $maps (recuperato con la funzione getmaps() dall'omonimo file)  
+	* viene effettuata la connessione al DB,
+	* 
 	* viene controllato il successo di questa operazione
 	* e poi viene attuata una seconda misura di sicurezza: l'escape dei dati:
 	* quei caratteri che possono essere pericolosi in una query vengono preceduti da '\'.
@@ -25,7 +27,10 @@
 	*/
 	
 	include ('db_connection.php'); // importa funzione dbconn($dbname) e queryToJson($mysqli, $query)
-
+	include ('getmaps.php');       // contiene funzione getmaps() che restituisce array di mappe
+	
+	$maps = getmaps($mapspath); // array di mappe
+	
 	// imposta header a "json"
 	header('Content-Type: application/json');
 
@@ -38,8 +43,16 @@
 
 		// PARAMETRI DA URL (CON TYPECAST)
         $map = (string) $_GET['map'];
-        
-        if($map == "realistic" || $map == "colorful"){
+		
+		$mapexists = false;
+
+		foreach ($maps as $checkmap){
+			if($checkmap["name"] === $map){
+				$mapexists = true;
+			}
+		}
+
+        if($mapexists){
             // CONNESSIONE E CONTROLLO SUCCESSO CONNESSIONE
             $conn = dbconn($dbname);
 
@@ -70,7 +83,7 @@
             $conn->close();
         }
         else{
-            echo "Mappa non riconosciuta!";
+            echo "{success: 'false', message: 'Mappa non riconosciuta!'}";
         }
 	}
 	else{
