@@ -1,6 +1,8 @@
 # progetto_100
 Humidity and Temperature monitoring system using an IoT network (school project)
 
+You can read more about this project [here](https://github.com/mario33881/progetto_100/wiki)
+Puoi leggere piu' informazioni riguardo il progetto [Qui](https://github.com/mario33881/progetto_100/wiki)
 ---
 
 ## Getting started (brief instructions)
