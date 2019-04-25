@@ -1,8 +1,13 @@
 # progetto_100
-Humidity and Temperature monitoring system using an IoT network (school project)
+Humidity and Temperature monitoring system using an IoT network (school project).
 
-You can read more about this project [here](https://github.com/mario33881/progetto_100/wiki) <br />
-Puoi leggere piu' informazioni riguardo il progetto [Qui](https://github.com/mario33881/progetto_100/wiki)
+Node MCUs reading humidity and temperature using DHT22 are connected to a Raspberry Pi Wirelessly to which they send the data to
+
+![](https://github.com/mario33881/progetto_100/raw/master/images/wallpaper.png?raw=true)
+![](https://i.imgur.com/xPlIjIH.png)
+
+You can read more about this project [from the wiki here](https://github.com/mario33881/progetto_100/wiki) <br />
+Puoi leggere piu' informazioni riguardo il progetto [nella wiki qui](https://github.com/mario33881/progetto_100/wiki)
 ---
 
 ## Getting started (brief instructions)
@@ -63,7 +68,7 @@ Work in progress
 
 ## Changelog
 
-**2019-04-25 01_04:** <br/>
+**2019-04-25 01_05:** <br/>
 Fixes:
 * Now you can add "x + room" classes to elements in the plan to make then clickable
 
@@ -91,6 +96,7 @@ First commit
 * OTA(over the air) updates
 * SPIFFS + web server remote configuration
 * WIKI with more infos/instructions
+* Add support for other languages
 
 ## Author
 Zenaro Stefano [(Github)](https://github.com/mario33881)
