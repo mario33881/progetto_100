@@ -5,8 +5,10 @@
 	* Funzioni utilizzate in tutti i file php che fanno operazioni sul DB
 	* 
 	* @since 1.0.0
-    */
-
+	*/
+	
+	// nascondi warning dell'errore, non necessario perche' verra' visualizzato
+	error_reporting(E_ALL ^ E_WARNING); 
 	
     function dbconn($dbname){
         /**
@@ -39,6 +41,7 @@
 
 		// CONTROLLA SUCCESSO CONNESSIONE
 		if ($conn->connect_error) {
+			echo '<svg height="100%" width="100%"><text x="0" y="50%" fill="red"> Connection failed: ' . $conn->connect_error . '</text></svg>';
 			die("Connection failed: " . $conn->connect_error);
         }
         

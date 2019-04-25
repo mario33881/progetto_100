@@ -64,6 +64,11 @@ Work in progress
 ## Changelog
 
 **2019-04-24 01_04:** <br/>
+Fixes:
+* database connection errors are now shown instead of the map and in an alert of the settings page
+> Before this fix you had to use Dev Tools to know the problem and the settings page had weird blank parts
+
+**2019-04-24 01_04:** <br/>
 Features:
 * Now you can add as many maps as you want in the /static/img/maps folder
 

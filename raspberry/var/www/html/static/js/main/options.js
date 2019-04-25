@@ -214,9 +214,12 @@ const Options = {
 
             $("#title").before(alert_div); // inserisce alert prima dell'elemento "#title"
 
-            setTimeout(() => {
-                $(".alert").alert('close'); // chiudi/rimuovi alert
-            }, 3000);                       // dopo 3000 millisecondi -> 3 secondi
+            if (t_status != "danger"){
+                // non chiudere il messaggio in caso di errore (ex. se errore di connessione al DB)
+                setTimeout(() => {
+                    $(".alert").alert('close'); // chiudi/rimuovi alert
+                }, 3000);                       // dopo 3000 millisecondi -> 3 secondi
+            }
         },
         sendTimestamp: function () {
             /* Manda il timestamp nelle impostazioni sul DB */
@@ -297,14 +300,19 @@ const Options = {
             });
         },
         makeRssiTable: function () {
-            /* Ottiene RSSI e lo mette dentro a "data" del componente */
+            /* Ottiene RSSI e lo mette dentro a "data" del componente (se non ci sono errori di connessione al DB) */
             axios.get("/static/php/getrssi.php").then((resp) => {
                 if (boold) {
                     console.log("Ho ricevuto:");
                     console.log(resp.data);
                 }
-
-                this.nodes_data = resp.data; // salva RSSI in "data"
+                
+                if (JSON.stringify(resp.data).search("<svg") != -1){
+                    this.nodes_data = [];
+                }
+                else{
+                    this.nodes_data = resp.data; // salva RSSI in "data"                
+                }
             })
         },
         rssiimg: function (rssi) {
@@ -366,14 +374,20 @@ const Options = {
             })
         },
         getColors: function (num) {
-            /* Ottiene tanti colori quanti sono specificati dal parametro num */
+            /* Ottiene tanti colori quanti sono specificati dal parametro num (se non ci sono errori di connessione al DB) */
             axios.get("/static/php/getcolors.php?n=" + num).then(resp => {
                 if (boold) {
                     console.log("Ho ricevuto questi colori:");
                     console.log(resp.data);
                 }
 
-                this.colors = resp.data; // salva in "data" i colori
+                if (JSON.stringify(resp.data).search("<svg") != -1){
+                    this.colors = [];
+                    this.showAlert(resp.data.replace(/.*(svg>)/, ""), "danger")
+                }
+                else{
+                    this.colors = resp.data; // salva in "data" i colori
+                }
             })
         },
         moreColors: function () {

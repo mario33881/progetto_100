@@ -88,13 +88,15 @@
             echo readfile($mappath);
         }
         else{
+            echo '<svg height="100%" width="100%"><text x="0" y="50%" fill="red"> Il file della planimetria "' . htmlspecialchars($map) . '" non ha mime type = SVG</text></svg>';
             echo "Il file non ha mime type = SVG";
         }
         
     }
     else{
         // qualcosa e' andato storto (DB manomesso/incompleto)
-        echo "mappa '" . htmlspecialchars($map) . "' non trovata";
+        echo '<svg height="100%" width="100%"><text x="0" y="50%" fill="red"> planimetria "' . htmlspecialchars($map) . '" non trovata</text></svg>';
+        echo "planimetria '" . htmlspecialchars($map) . "' non trovata";
     }
     
     // CHIUDI CONNESSIONE
