@@ -75,46 +75,18 @@ const Home = {
                     return false;
                 });
 
+                // per extra (scritte, immagini, altri elementi cliccabili)
+                extras = document.getElementsByClassName("x" + stanza);
 
-                // parte statica TODO: dinamicizzare anche questa parte
-                if (stanza == "disimpegno") {
-                    scritta = "text849";
-                    touchsvg = "path882-1";
-
+                for (let extra of extras){
+                    extra.addEventListener("click", () => {
+                        if (boold) {
+                            console.log("Hai cliccato ", stanza);
+                        }
+                        window.location.href = "/#/graph/" + stanza;
+                        return false;
+                    })
                 }
-                else if (stanza == "esterno") {
-                    scritta = "text841-2";
-                    touchsvg = "path882-2";
-
-                }
-                else if (stanza == "bagno") {
-                    scritta = "text845";
-                    touchsvg = "path882-7";
-                }
-                else if (stanza == "soggiorno") {
-                    scritta = "text841";
-                    touchsvg = "path882";
-
-                }
-
-                // aggiunge click alla scritta
-                $("#" + scritta).on("click", (event) => {
-                    if (boold) {
-                        console.log("Hai cliccato ", stanza);
-                    }
-                    window.location.href = "/#/graph/" + stanza;
-                    return false;
-                });
-
-                // aggiunge click all'immagine touch
-                $("#" + touchsvg).on("click", (event) => {
-                    if (boold) {
-                        console.log("Hai cliccato ", stanza);
-                    }
-                    window.location.href = "/#/graph/" + stanza;
-                    return false;
-                });
-
             }
 
 

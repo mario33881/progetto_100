@@ -63,7 +63,11 @@ Work in progress
 
 ## Changelog
 
-**2019-04-24 01_04:** <br/>
+**2019-04-25 01_04:** <br/>
+Fixes:
+* Now you can add "x + room" classes to elements in the plan to make then clickable
+
+**2019-04-25 01_04:** <br/>
 Fixes:
 * database connection errors are now shown instead of the map and in an alert of the settings page
 > Before this fix you had to use Dev Tools to know the problem and the settings page had weird blank parts
