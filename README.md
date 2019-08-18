@@ -92,11 +92,13 @@ Changes:
 **2019-03-21 01_01:** <br/>
 First commit
 
-## To do
+## To do / ideas
 * OTA(over the air) updates
 * SPIFFS + web server remote configuration
 * WIKI with more infos/instructions
 * Add support for other languages
+* Unit Testing scripts
+* Dockerize web server
 
 ## Author
 Zenaro Stefano [(Github)](https://github.com/mario33881)
