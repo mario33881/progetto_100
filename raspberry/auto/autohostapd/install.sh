@@ -429,6 +429,7 @@ elif [[ $line == *"status='installed hostapd'"* ]] ; then
     hostapdconfig  # creates configs file and tells hostapd to use it
     ipforwarding
     setmasquerade
+    saveiptables
     restoreiptables
     removeautostart
     hostapdunmasknenable
