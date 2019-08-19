@@ -50,7 +50,13 @@ mysqlinstall(){
     logger "MYSQL" "Installing Mysql..." true automysql.log
     
     if ! $DEBUG ; then
-        sudo apt-get install mysql-server -y
+        { 
+            sudo apt-get install mysql-server -y
+        } || {
+            # Latest versions of raspbian throws "mysql-server has no installation candidate" error
+            # https://mariadb.com/newsroom/press-releases/mariadb-replaces-mysql-as-the-default-in-debian-9/
+            sudo apt-get install default-mysql-server -y
+        }
     else
         echo "Should installing mysql..."
     fi
