@@ -69,7 +69,7 @@ e richiama la funzione bootunclutter() per impostare il suo avvio automatico al 
 Modifica il file ```/etc/xdg/lxsession/LXDE-pi/autostart``` per impostare l'avvio automatico,
 per farlo:
 1. Usa il comando echo all'interno di un nuovo interprete bash ("-c"), che esegue il comando come su
-perche' non e' possibile modificare il file a causa dei permessi e echo non accetta il prefisso sudo,
+perche' non e' possibile modificare il file a causa dei permessi e il pipe viene intepretato prima del prefisso sudo,
 per "visualizzare" il comando di esecuzione di unclutter
 
 2. Viene fatto un pipe ("|") dell'output di echo sul comando cat:
@@ -171,7 +171,7 @@ Dopo aver creato lo script di avvio di chromium deve essere impostato la sua ese
 viene aggiunta la riga "@bash /home/pi/autostart_chromium.sh" al file ```/etc/xdg/lxsession/LXDE-pi/autostart```,
 per farlo:
 1. Usa il comando echo all'interno di un nuovo interprete bash ("-c"), che esegue il comando come su
-perche' non e' possibile modificare il file a causa dei permessi e echo non accetta il prefisso sudo,
+perche' non e' possibile modificare il file a causa dei permessi e il pipe viene intepretato prima del prefisso sudo,
 per "visualizzare" il comando di esecuzione dello script per l'avvio di chromium
 
 2. Viene fatto un pipe ("|") dell'output di echo sul comando cat:
