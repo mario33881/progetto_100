@@ -99,6 +99,8 @@ First commit
 * Add support for other languages
 * Unit Testing scripts
 * Dockerize web server
+* Use Vue components instead of JS files 
+> this implies adding a build stage using something like webpack
 
 ## Author
 Zenaro Stefano [(Github)](https://github.com/mario33881)
