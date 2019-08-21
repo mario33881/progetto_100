@@ -12,9 +12,9 @@
     $bgdark = adjustBrightness($bgcolor, 10, true); // false -> chiaro, 10 -> 10%
     
     // divide $bglight hex to decimal values
-    $bglight_r = hextorgb($bglight)[0];
-    $bglight_g = hextorgb($bglight)[1];
-    $bglight_b = hextorgb($bglight)[2];
+    $bglight_r = intval(hextorgb($bglight)[0]);
+    $bglight_g = intval(hextorgb($bglight)[1]);
+    $bglight_b = intval(hextorgb($bglight)[2]);
 ?>
 
 /* datepicker / selettore data */
