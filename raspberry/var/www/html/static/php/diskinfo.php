@@ -1,22 +1,22 @@
 <?php
   /**
-	* Questo file ottiene lo spazio libero e occupato sul disco di sistema
-	*
-	* Compatibile con la maggior parte dei sistemi operativi
-	* 
-	* @since 1.0.0
+  * Questo file ottiene lo spazio libero e occupato sul disco di sistema
+  *
+  * Compatibile con la maggior parte dei sistemi operativi
+  * 
+  * @since 1.0.0
   */
 
 
   function HumanSize($Bytes){
     /**
-		 * Questa funzione si occupa di cambiare unita' di misura ai byte passati come parametro.
-		 *
-		 * @since 1.0.0
+     * Questa funzione si occupa di cambiare unita' di misura ai byte passati come parametro.
+     *
+     * @since 1.0.0
      * 
-		 * @param int $Bytes numero di byte da convertire in forma "umana"/leggibile
-		 * 
-		 * @return string $humanbytes stringa byte convertiti in unita' di misura diverse
+     * @param int $Bytes numero di byte da convertire in forma "umana"/leggibile
+     * 
+     * @return string $humanbytes stringa byte convertiti in unita' di misura diverse
     */
     
     $Type = array("", "K", "M", "G", "T", "P", "E", "Z", "Y"); // unita' di misura byte

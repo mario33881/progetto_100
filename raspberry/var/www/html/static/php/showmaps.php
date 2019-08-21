@@ -1,10 +1,10 @@
 <?php
    /**
-	* Questo file visualizza in JSON il nome e il percorso delle mappe nel percorso /static/img/maps 
+    * Questo file visualizza in JSON il nome e il percorso delle mappe nel percorso /static/img/maps 
     *
     * File usato dal JS /static/js/main/options.js
-	* 
-	* @since 1.1.0
+    * 
+    * @since 1.1.0
     */
 
     include ('getmaps.php'); // contiene funzione getmaps() che restituisce array di mappe

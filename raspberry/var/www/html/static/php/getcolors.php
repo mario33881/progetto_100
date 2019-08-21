@@ -2,7 +2,7 @@
     /**
     * Questo file ottiene la lista dei colori per la frontend, pagina impostazioni 
     *
-	* @since 1.0.0
+    * @since 1.0.0
     */
 
     include ('db_connection.php'); // importa funzione dbconn($dbname) e queryToJson($mysqli, $query)
@@ -17,14 +17,14 @@
 
     function getColors($t_mysqli, $t_dbtable){
         /**
-		 * Questa funzione esegue la query per selezionare i colori da visualizzare nella pagina impostazioni.
+         * Questa funzione esegue la query per selezionare i colori da visualizzare nella pagina impostazioni.
          *
-		 * @since 1.0.0
+         * @since 1.0.0
          * 
-		 * @param object $t_mysqli oggetto connessione gia' connesso al DB
+         * @param object $t_mysqli oggetto connessione gia' connesso al DB
          * @param string $t_dbtable tabella da dove prendere colori
-		 * 
-		 * @return string $json colori
+         * 
+         * @return string $json colori
         */
     
         // controllo se parametro n e' stato passato e se e' un numero

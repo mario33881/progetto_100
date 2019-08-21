@@ -1,10 +1,10 @@
 <?php
     /**
-	* Questo file restituisce in array il nome e il percorso delle mappe nel percorso /static/img/maps 
+    * Questo file restituisce in array il nome e il percorso delle mappe nel percorso /static/img/maps 
     *
     * File usato dai file PHP "sendmap.php" e "showmaps.php"
-	* 
-	* @since 1.1.0
+    * 
+    * @since 1.1.0
     */
 
     // percorso cartella delle mappe
@@ -13,18 +13,18 @@
 
     function getmaps($path){
         /**
-		 * Questa funzione concatena i parametri in un percorso.
-		 *
-		 * La funzione scorre i parametri passati alla funzione, 
+         * Questa funzione concatena i parametri in un percorso.
+         *
+         * La funzione scorre i parametri passati alla funzione, 
          * se non sono stringhe nulle le aggiunge in un array, 
          * gli elementi dell'array verranno uniti con il separatore di sistema,
          * infine verranno rimossi tutti i separatori di sistema doppi
          *
-		 * @since 1.1.0
+         * @since 1.1.0
          * 
-		 * @param string percorso delle mappe
-		 * 
-		 * @return array mappe (nome e percorso per ogni mappa)
+         * @param string percorso delle mappe
+         * 
+         * @return array mappe (nome e percorso per ogni mappa)
         */
 
         // percorso relativo alla root del webserver, con "/"

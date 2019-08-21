@@ -3,8 +3,8 @@
     * Questo file rende disponibili funzioni utili all'elaborazione dei colori
     *
     * File usato dai CSS "dinamici" in php ( "/static/settings/cm_style.php" )
-	*
-	* @since 1.0.0
+    *
+    * @since 1.0.0
     */
 
     $boold = false;
@@ -131,7 +131,7 @@
 
         // return stringa "hex"
         return "#$hex_r$hex_g$hex_b";
-        }
+    }
 
     if ($boold){
         $hex = '#4285F4';

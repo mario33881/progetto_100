@@ -1,9 +1,9 @@
 <?php
     /**
-	* Questo file ottiene gli RSSI da visualizzare nelle impostazioni nella frontend
-	*
-	* @since 1.0.0
-	* @see dbconn($dbname) in 'db_connection.php'
+    * Questo file ottiene gli RSSI da visualizzare nelle impostazioni nella frontend
+    *
+    * @since 1.0.0
+    * @see dbconn($dbname) in 'db_connection.php'
     */
     
     include ('db_connection.php'); // importa funzione dbconn($dbname) e queryToJson($mysqli, $query)
@@ -18,17 +18,17 @@
 
     function getRssi($t_mysqli, $t_dbtable){
          /**
-		 * Questa funzione esegue la query per selezionare l'RSSI dei singoli nodi.
-		 *
-		 * La funzione esegue con la funzione queryToJson() la query 
+         * Questa funzione esegue la query per selezionare l'RSSI dei singoli nodi.
+         *
+         * La funzione esegue con la funzione queryToJson() la query 
          * per selezionare l'RSSI dei singoli nodi (JSON),
          *
-		 * @since 1.0.0
+         * @since 1.0.0
          * 
-		 * @param object $t_mysqli oggetto connessione gia' connesso al DB
+         * @param object $t_mysqli oggetto connessione gia' connesso al DB
          * @param string $t_dbtable tabella da dove prendere rilevazioni
-		 * 
-		 * @return string $json ultime rilevazioni
+         * 
+         * @return string $json ultime rilevazioni
         */
         
         $query = sprintf("SELECT id, id_node, rssi -- seleziona questi campi 
