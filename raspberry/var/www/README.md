@@ -32,6 +32,13 @@
                 * [t2ts.JS](#t2ts.js)
             * [Vue e Vue router](#vue-e-vue-router)
             * [Descrizione pagine Frontend](#descrizione-pagine-frontend)
+                * [Home](#home)
+                    * [planselector.php](#planselector.php)
+                    * [getlatestdata.php](#getlatestdata.php)
+                * [Graph](#graph)
+                * [Options](#options)
+                * [Infos](#infos)
+            * [Inizializzazione Vue Router e Vue](#inizializzazione-vue-router-e-vue)
     * [Descrizione per componente](#descrizione-per-componente)
 
 ## Introduzione
@@ -44,6 +51,9 @@ Questa sezione parlera' brevemente di cosa fanno i file presenti nella cartella 
 per i dettagli di funzionamento andare nella sezione [Descrizione](#descrizione)
 
 ### PHP
+![](/images/php-wikipedia.org.png)
+> Credits: https://en.wikipedia.org/wiki/File:PHP-logo.svg
+
 Lato backend viene utilizzato il linguaggio PHP:
 
 #### Script PHP richiamati da altri script
@@ -119,9 +129,15 @@ dopo aver verificato il suo mime type e la sua reale esistenza
 ---
 
 ### Javascript
+![](/images/js-glue-labs.com.png)
+> Credits: https://glue-labs.com/articoli/come-scrivere-codice-javascript-usare-una-styleguide-google
+
 Javascript, in particolare il framework [Vue](https://vuejs.org/), si occupa del lato Frontend.
 
 #### Vue
+![](/images/vue-vuejs.org.png)
+> Credits: https://vuejs.org/
+
 Vue e' un framework Javascript per creare interfacce utente.
 > Alternative altrettanto valide sarebbero [Angular](https://angular.io/) e [React](https://it.reactjs.org/)
 
@@ -148,6 +164,8 @@ La navigazione nell'applicazione appare fluida lato utente perche' tutte le pagi
 #### Utilities
 L'HTML importa diversi script javascript per aggiungere funzionalita':
 * ```floorplan/svg.min.js``` : utility per fare operazioni su elementi svg
+    ![](/images/svgjs-svgjs.com.png)
+    > Credits: https://svgjs.com/docs/2.7/
 * ```materialize/materialize.min.js``` per gli elementi di materialize (usato per il datepicker e il timepicker nelle impostazioni)
 * ```mdbootstrap/bootstrap.min.js```, ```mdbootstrap/jquery-3.3.1.min.js```, ```mdbootstrap/mdb.min.js``` e ```mdbootstrap/popper.min.js```: javascript per mdbootstrap
 * ```options/axios.min.js```: permette di fare richieste asincrone (GET, POST...)
@@ -159,9 +177,14 @@ L'HTML importa diversi script javascript per aggiungere funzionalita':
 #### Pagine frontend
 
 * ```main/graph.js```: Crea oggetto con pagina grafici
+    ![](https://i.imgur.com/WLxOBgX.png)
 * ```main/home.js```: Crea oggetto con pagina principale
+    ![](https://i.imgur.com/xPlIjIH.png)
 * ```main/infos.js```: Crea oggetto con pagina informazioni
+    ![](https://i.imgur.com/HCK1New.png)
 * ```main/options.js```: Crea oggetto con pagina impostazioni
+    ![](https://i.imgur.com/YYGBdPq.png)
+    ![](https://i.imgur.com/UwtuSxs.png)
 * Javascript in index.html: usa le variabili con le pagine per configurare le route delle pagine
 
 [Torna su](#sezioni-documentazione)
@@ -169,12 +192,17 @@ L'HTML importa diversi script javascript per aggiungere funzionalita':
 ---
 
 ### CSS
+![](/images/cssimage-wikipedia.org.png)
+> Credits: https://en.wikipedia.org/wiki/Cascading_Style_Sheets
 
 Il CSS si occupa di rendere gradevole l'interfaccia utente
 
 [Torna su](#sezioni-documentazione)
 
 #### Frameworks
+![](/images/mdbootstrap-github.com.jpg)
+> Credits: https://github.com/mdbootstrap
+
 Molti degli elementi usano come stile lo stile di [mdbootstrap](https://mdbootstrap.com/):
 * ```/static/css/all.css```: file font-awesome per il font (posizionato in ```/static/font/roboto```)
 * ```/static/css/bootstrap.min.css```: stili bootstrap
@@ -184,6 +212,9 @@ Molti degli elementi usano come stile lo stile di [mdbootstrap](https://mdbootst
 mdbootstrap e' disponibile sia in versione gratuito sia in versione a pagamento:
 purtroppo la versione gratuita non include timepicker e datepicker e lo stile dello switch gratuito non
 e' bello come lo switch disponibile in altre alternative 
+
+![](/images/materializecss-extensions.typo3.org.png)
+> Credits: https://extensions.typo3.org/extension/t3content_materializecss/
 
 Per il timepicker, datepicker e switch viene usato [materialize](https://materializecss.com/):
 ```/static/css/materialize.min.css```
@@ -394,6 +425,8 @@ La pagina comincia a richiedere tutti i file css:
 
     Le 4 classi successive servono per definire l'animazione di entrata e uscita durante il cambio delle pagine
 
+    ![](/images/vue-pagetransition.gif)
+
     ```css
     /* VUE TRANSITION - TRANSIZIONE TRA PAGINE */
 
@@ -448,6 +481,8 @@ La pagina comincia a richiedere tutti i file css:
     ---
 
     Questo CSS serve per i quadrati con i colori selezionabili dall'utente
+
+    ![](/images/options-squares.png)
 
     ```css
     /* IMPOSTAZIONI - SELEZIONE COLORE INTERFACCIA
@@ -571,6 +606,8 @@ La pagina comincia a richiedere tutti i file css:
 
     Poi vengono definite le classi per il typewriter nella pagina delle informazioni
     (l'effetto scrittura)
+
+    ![](/images/infos-typewriter.gif)
 
     ```css
     /* PARTE TYPEWRITER 
@@ -864,9 +901,9 @@ La pagina comincia a richiedere tutti i file css:
             
             La funzione restituira' l'oggetto connessione con la connessione avvenuta correttamente
 
-            @since 1.0.0
-            @param string $dbname  nome del database
-            @return object $conn oggetto connessione (connessione avvenuta con successo)
+            @since 1.0.0                                                                 <br>
+            @param string $dbname  nome del database                                     <br>
+            @return object $conn oggetto connessione (connessione avvenuta con successo) <br>
 
         
         * viene definita la funzione ```queryToJson($t_mysqli, $t_query)```:
@@ -898,8 +935,8 @@ La pagina comincia a richiedere tutti i file css:
         
         @since 1.0.0
         
-        @param object $t_mysqli oggetto connessione gia' connesso al DB
-        @param string $t_opttable tabella da dove prendere colore selezionato
+        @param object $t_mysqli oggetto connessione gia' connesso al DB                          <br>
+        @param string $t_opttable tabella da dove prendere colore selezionato                    <br>
         @param string $t_colorstable tabella da dove prendere esadecimale del colore selezionato
         
         @return array $array_opts array con il colore in esadecimale
@@ -990,6 +1027,9 @@ La pagina comincia a richiedere tutti i file css:
     * ```background-color``` e' il colore di sfondo
     * ```border-color``` e' il colore del bordo
 
+    Questo e' il risultato:
+    ![](/images/options-button.gif)
+
     ---
 
     Dopo il CSS dei pulsanti viene importato il css per lo switch
@@ -1035,6 +1075,9 @@ La pagina comincia a richiedere tutti i file css:
 
     Infine viene restituito il CSS per lo switch:
     * ```background-color``` e' il colore di sfondo
+
+    Visualizzato nel browser:
+    ![](/images/options-switch.gif)
 
     ---
 
@@ -1133,8 +1176,12 @@ La pagina comincia a richiedere tutti i file css:
 
     ```
 
-    Il CSS viene infine visualizzato
     TODO: documentare CSS datepicker _cm_datepicker.php
+    
+    Il CSS viene infine visualizzato
+
+    Datapicker nel browser:
+    ![](/images/options-datepicker.gif)
 
     ---
 
@@ -1211,8 +1258,12 @@ La pagina comincia a richiedere tutti i file css:
     }
     ```
 
-    Il CSS viene infine visualizzato
     TODO: documentare CSS timepicker _cm_timepicker.php
+
+    Il CSS viene infine visualizzato
+    
+    Visualizzato nella frontend:
+    ![](/images/options-timepicker.gif)
 
     [Torna su](#sezioni-documentazione)
 
@@ -1257,6 +1308,8 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
 3. Vengono importate le utility:
     
     ##### SVG.JS
+    ![](/images/svgjs-svgjs.com.png)
+    > Credits: https://svgjs.com/docs/2.7/
 
         /static/js/floorplan/svg.min.js
     
@@ -1285,8 +1338,6 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
     ##### Axios.JS
 
         /static/js/options/axios.min.js
-
-    TODO: documentare axios.JS
 
     [Axios.js](https://github.com/axios/axios) e' un client http
     che permette di fare richieste asincrone basate sulle "promesse".
@@ -1431,6 +1482,9 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
 #### Vue e Vue router
 4. Vengono importati Vue e Vue router
 
+    ![](/images/vue-vuejs.org.png)
+    > Credits: https://vuejs.org/
+
     Vue e' un framework Javascript per creare interfacce utente.
     > Alternative altrettanto valide sarebbero [Angular](https://angular.io/) e [React](https://it.reactjs.org/)
 
@@ -1481,7 +1535,336 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
 
     ##### Home
 
-    TODO: documentare pagina home
+    ![](https://i.imgur.com/xPlIjIH.png)
+
+    La pagina principale, contenuta nel componente "Home", e'
+    gestita dal file ```/static/js/main/home.js```.
+
+    Quando viene visitata la pagina l'html contenuto nella proprieta' "template"
+    viene iniettata al posto di ```<router-view></router-view>``` all'interno del container vue.
+
+    Stato "originale" del container:
+    ```html
+    <!-- Contenitore vue -->
+    <div id="app">
+        <transition name="slide-fade">
+            <!-- Animazione cambio pagine -->
+            <router-view></router-view> <!-- Pagina visualizzata -->
+        </transition>
+    </div>
+    ```
+    
+    Con html iniettato:
+    ```html
+    <div class="page">
+        <div class="container">
+            <h1 class="text-container title">Progetto 100 + 100</h1>
+
+            <div id="floorplan" ref="floorplan" class="floorplan"> </div>
+
+            <div class="btn-group fixed-bottom" role="group">
+                <button v-on:click="gotoinfos" type="button" class="btn bg-color halfpage"> {{ infoprogetto }} </button>
+                <button v-on:click="gotooptions" type="button" class="btn bg-color halfpage"> {{ impostazioni }} </button>
+            </div>
+        </div>
+    </div>
+    ```
+    
+    In realta' questo non e' l'html visualizzabile dalla frontend perche' la direttiva v-on
+    e le variabili {{ infoprogetto }} e {{ impostazioni }} vengono interpretate da vue:
+
+    Le direttive "v-on" permettono di gestire degli eventi, come il click dell'elemento:
+    v-on:click fa esattamente questo, quando viene cliccato esegue del javascript:
+    * ```v-on:click="gotoinfos"``` indica che cliccando l'elemento viene eseguito
+      il metodo gotoinfos() contenuto in "methods"
+
+            gotoinfos()
+        Reindirizza alla pagina delle informazioni impostando ```window.location.href = "/#/infos";```
+    
+    * ```v-on:click="gotooptions"``` indica che cliccando l'elemento viene eseguito
+      il metodo gotooptions() contenuto in "methods"
+
+            gotooptions()
+        Reindirizza alla pagina delle impostazioni impostando ```window.location.href = "/#/options";```
+
+    Le variabili in Vue sono contenute tra parentesi graffe "{{ }}":
+    *  ```{{ infoprogetto }}``` indica di visualizzare il contenuto della variabile "infoprogetto"
+    restituita dalla funzione data() del componente vue
+    *  ```{{ impostazioni }}``` indica di visualizzare il contenuto della variabile "impostazioni"
+    restituita dalla funzione data() del componente vue
+
+    Quando la pagina viene caricata viene eseguita la funzione contenuta nella proprieta' "mounted"
+    del componente vue:
+
+    ```js
+    var checksize = window.matchMedia("(max-width: 450px)"); // controllo se lo schermo < 450px di larghezza
+    if (checksize.matches) {
+        // se e' minore di 450px
+        this.infoprogetto = "Info progetto"; // cambia il nome del pulsante che va nelle info
+    }
+    ```
+    > "this" permette di controllare/richiamare direttamente la variabile (o funzione)
+    > nell'oggetto/componente
+
+    Prima viene verificato se lo schermo ha una grandezza di massimo 450px:
+    se la condizione e' vera viene modificata la variabile "infoprogetto" contenuta in "data"
+    da "Informazioni progetto" a "Info progetto" permettendo all'intero testo di rimanere nel pulsante
+
+    ```js
+    var draw = SVG(document.getElementById("floorplan")); // seleziona elemento dove inserire la mappa
+    axios.get("/static/img/planselector.php").then((resp) => {
+        // richiede la mappa
+
+        if (boold) {
+            console.log(resp);
+        }
+
+        draw.svg(resp.data); // disegna/inserisce la mappa
+
+        if (boold) {
+            console.log("ora aggiungo i link");
+        }
+
+        this.setLinks(); // imposta i link sulla mappa
+
+        if (boold) {
+            console.log("Aggiungo letture");
+        }
+
+        this.updMap(); // inserisci temperature e umidita' nella mappa
+
+        setInterval(this.updMap, 10000); // aggiorna dopo ogni 10 secondi le rilevazioni sulla mappa
+
+    });
+    ```
+
+    Poi vengono effettuate tutte le operazioni relative alla planimetria:
+
+    ```js
+    var draw = SVG(document.getElementById("floorplan")); // seleziona elemento dove inserire la mappa
+    ```
+    Viene definita una variabile che usa svg.js per controllare il contenuto dell'elemento con id "floorplan"
+
+    ```js
+    axios.get("/static/img/planselector.php").then((resp) => {})
+    ```
+    > la variabile "resp" contiene informazioni relative alla risposta della richiesta
+
+    Viene eseguita una GET request con axios.js alla pagina PHP "/static/img/planselector.php"
+    e quando riceviamo una risposta (".then()") deve eseguire la funzione contenuta nelle parentesi.
+
+    > Questa funzione contenuta in .then() e' chiamata "arrow function" perche', a differenza delle classiche
+    > funzioni javascript definite con la keyword ```function``` (```function nomefunzione(param){}```),
+    > usano appunto la freccia ```=>``` ( ```(param1, param2) => {}``` ).
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+    ###### planselector.php
+
+    Lo script PHP prima include ```/static/php/db_connection.php``` per potersi connettere al database.
+
+    Lo script ```db_connection.php```:
+    * disabilita la visualizzazione dei warning (verranno gestiti visualizzandoli per poi terminare lo script)
+    * viene definita la funzione ```dbconn($dbname)```:
+
+            dbconn($dbname)
+            
+        Questa funzione si occupa di connettersi al DB, e operare sulla tabella passati come parametri.
+        La funzione recupera dal file 'credentials.ini' username e password per accedere al DB in locale.
+         
+        il parametro verra' usato per accedere al DB.
+            
+        La funzione restituira' l'oggetto connessione con la connessione avvenuta correttamente
+
+        @since 1.0.0
+        @param string $dbname  nome del database
+        @return object $conn oggetto connessione (connessione avvenuta con successo)
+
+        
+    * viene definita la funzione ```queryToJson($t_mysqli, $t_query)```:
+
+            queryToJson($t_mysqli, $t_query)
+
+        Questa funzione si occupa di eseguire la query e di resituire i dati in formato json.
+         
+        Esegue la query, ottiene i dati e li inserisce in un array,
+        svuota la memoria occupata dal risultato della query e restituisce l'array in formato json
+
+        @since 1.0.0
+    
+        @param object $t_mysqli oggetto connessione
+        @param string $t_query query da eseguire nel database connesso in $t_mysqli
+         
+        @return string json_encode($data) json del risultato della query
+
+    planselector.php si connette al database, richiama la sua funzione get_map():
+
+        get_map($t_mysqli, $t_dbtable)
+
+    Questa funzione esegue la query per selezionare la mappa selezionata dall'utente.
+    
+    La funzione esegue con la funzione queryToJson() la query
+    per selezionare la mappa e ottiene il JSON,
+    converte il JSON ottenuto in array che verra' restituito
+    
+    @since 1.0.0
+    
+    @param object $t_mysqli oggetto connessione gia' connesso al DB
+    @param string $t_dbtable tabella impostazioni
+    
+    @return array $array_opts array con la mappa
+
+    Dal return ```Array ( [0] => Array ( [map] => <nome planimetria> ) )``` viene recuperato il nome della planimetria e viene usato dalla funzione join_paths() per creare il percorso teorico del
+    file SVG con la planimetria:
+
+        join_paths()
+    
+    Questa funzione concatena i parametri in un percorso.
+    
+    La funzione scorre i parametri passati alla funzione,
+    se non sono stringhe nulle le aggiunge in un array,
+    gli elementi dell'array verranno uniti con il separatore di sistema,
+    infine verranno rimossi tutti i separatori di sistema doppi
+    
+    @since 1.1.0
+    
+    @param string sono accettati piu' parametri stringhe
+    
+    @return string percorso ottenuto concatenando i parametri
+
+    Con la funzione file_exists() di PHP si assicura che
+    la planimetria sia esistente nella cartella "/static/img/maps",
+    se esiste viene verificato il suo mime type per assicurarsi che il file
+    sia un file svg, infine viene letto e visualizzato.
+
+    Se il file non esiste o il mime type non corrisponde a "svg"
+    viene visualizzato un elemento svg con un testo di errore
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+    Quando la funzione in .then() viene eseguita...
+
+    ```js
+    draw.svg(resp.data); // disegna/inserisce la mappa
+    ```
+    viene usata la variabile legata all'elemento controllato da svg.js per inserire il contenuto
+    della GET request (resp.data) nell'elemento stesso.
+
+    ```js
+    this.setLinks(); // imposta i link sulla mappa
+    ```
+    Viene richiamata la funzione setLinks() del componente per 
+    rendere la mappa interattiva:
+
+        setLinks()
+    Ottiene le stanze con la funzione getLocations() e imposta gli eventi click per andare nei grafici.
+    Gli elementi cliccabili avranno una di queste proprieta':
+    * id corrispondente alla stanza (area stanza)
+    * id corrispondente a "t" + nome della stanza (testo che visualizza temperatura)
+    * id corrispondente a "h" + nome della stanza (testo che visualizza umidita')
+    * classe corrispondente a "x" + nome della stanza (elementi extra che appartengono alla stanza)
+
+        getLocations()
+    Questa funzione estrae tutte le stanze dalla mappa e li restituisce in un array.
+    Recupera tutti gli id dei rettangoli nella planimetria.
+    I rettangoli devono essere elementi \<rect> con la stringa "rect" contenuta nell'id
+    
+    ```js
+    this.updMap()
+    setInterval(this.updMap, 10000)
+    ```
+    Viene richiamata la funzione updMap() per aggiungere le ultime rilevazioni delle stanze,
+    poi viene impostato di richiamare la funzione ogni 10 secondi per mantenere aggiornati i dati
+    > updMap() viene richiamato prima di impostare l'intervallo per il funzionamento di setInterval stesso:
+    prima vengono attesi i 10 secondi, poi viene richiamata la funzione. Questo significa che i primi
+    10 secondi la planimetria rimarrebbe senza rilevazioni
+
+    > ```setInterval(funzione, millisecondi)``` e' il modo corretto di usare setInterval:
+    > potrebbe venire naturale pensare di scrivere ```setInterval(funzione(), millisecondi)```. <br>
+    > Questo NON porta al risultato desiderato: la funzione verrebbe chiamata direttamente
+    > una volta e basta.
+
+        updMap()
+    La funzione aggiorna le informazioni sulla planimetria:
+    recupera dalla pagina PHP ```/static/php/getlatestdata.php``` le ultime rilevazioni,
+    e scorre l'array delle stanze ottenute da getLocations() per visualizzare
+    gli ultimi valori di umidita' e temperatura di ogni stanza
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+    ###### getlatestdata.php
+
+    Lo script PHP prima include ```/static/php/db_connection.php``` per potersi connettere al database.
+
+    Lo script ```db_connection.php```:
+    * disabilita la visualizzazione dei warning (verranno gestiti visualizzandoli per poi terminare lo script)
+    * viene definita la funzione ```dbconn($dbname)```:
+
+            dbconn($dbname)
+            
+        Questa funzione si occupa di connettersi al DB, e operare sulla tabella passati come parametri.
+        La funzione recupera dal file 'credentials.ini' username e password per accedere al DB in locale.
+         
+        il parametro verra' usato per accedere al DB.
+            
+        La funzione restituira' l'oggetto connessione con la connessione avvenuta correttamente
+
+        @since 1.0.0
+        @param string $dbname  nome del database
+        @return object $conn oggetto connessione (connessione avvenuta con successo)
+
+        
+    * viene definita la funzione ```queryToJson($t_mysqli, $t_query)```:
+
+            queryToJson($t_mysqli, $t_query)
+
+        Questa funzione si occupa di eseguire la query e di resituire i dati in formato json.
+         
+        Esegue la query, ottiene i dati e li inserisce in un array,
+        svuota la memoria occupata dal risultato della query e restituisce l'array in formato json
+
+        @since 1.0.0
+    
+        @param object $t_mysqli oggetto connessione
+        @param string $t_query query da eseguire nel database connesso in $t_mysqli
+         
+        @return string json_encode($data) json del risultato della query
+
+    getlatestdata.php imposta il contenuto della pagina a "json",
+    si connette al database e richiama la funzione getLatestData()
+
+        getLatestData()
+    Questa funzione esegue la query per selezionare le ultime rilevazioni dei singoli nodi.
+
+    La funzione esegue con la funzione queryToJson() la query
+    per selezionare le ultime rilevazioni dei singoli nodi (JSON),
+
+    @since 1.0.0
+         
+    @param object $t_mysqli oggetto connessione gia' connesso al DB
+    @param string $t_dbtable tabella da dove prendere rilevazioni
+         
+    @return string $json ultime rilevazioni
+
+    Query SQL:
+    ```sql
+    SELECT id, id_node, humidity, celsius_temp -- seleziona questi campi
+    FROM `$t_dbtable`                        -- dalla tabella rilevazioni
+    WHERE id IN (                            -- dove l'id e' nel record set
+        SELECT MAX(id)                       -- degli id massimi
+        FROM `$t_dbtable`                    -- dalla tabella rilevazioni
+        GROUP BY id_node                     -- per ogni nodo/stanza
+    )
+    ORDER BY id_node
+    ```
+
+    Il json con le ultime rilevazioni viene visualizzato
     
     [Torna su](#sezioni-documentazione)
 
@@ -1503,6 +1886,7 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
 
     [Torna su](#sezioni-documentazione)
 
+#### Inizializzazione Vue Router e Vue
 6. Gli oggetti/pagine vengono importati da Vue Router
 
     ```js
