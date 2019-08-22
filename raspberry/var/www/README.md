@@ -785,8 +785,8 @@ La pagina comincia a richiedere tutti i file css:
             
             La funzione restituira' l'oggetto connessione con la connessione avvenuta correttamente
 
-            @since 1.0.0
-            @param string $dbname  nome del database
+            @since 1.0.0                                                                 <br>
+            @param string $dbname  nome del database                                     <br>
             @return object $conn oggetto connessione (connessione avvenuta con successo)
 
         
@@ -801,7 +801,7 @@ La pagina comincia a richiedere tutti i file css:
 
             @since 1.0.0
     
-            @param object $t_mysqli oggetto connessione
+            @param object $t_mysqli oggetto connessione                                 <br>
             @param string $t_query query da eseguire nel database connesso in $t_mysqli
          
             @return string json_encode($data) json del risultato della query
@@ -819,8 +819,8 @@ La pagina comincia a richiedere tutti i file css:
         
         @since 1.0.0
         
-        @param object $t_mysqli oggetto connessione gia' connesso al DB
-        @param string $t_opttable tabella da dove prendere colore selezionato
+        @param object $t_mysqli oggetto connessione gia' connesso al DB                          <br>
+        @param string $t_opttable tabella da dove prendere colore selezionato                    <br>
         @param string $t_colorstable tabella da dove prendere esadecimale del colore selezionato
         
         @return array $array_opts array con il colore in esadecimale
@@ -1260,9 +1260,9 @@ La pagina comincia a richiedere tutti i file css:
 
     TODO: documentare CSS timepicker _cm_timepicker.php
 
-    Il CSS viene infine visualizzato
+    Il CSS viene infine visualizzato/restituito
     
-    Visualizzato nella frontend:
+    Timepicker visualizzato nella frontend:
     ![](/images/options-timepicker.gif)
 
     [Torna su](#sezioni-documentazione)
@@ -1423,7 +1423,7 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
     ```
     la variabile backbutton contiene l'elemento con id "backbutton",
     cioe' il pulsante che serve per tornare indietro,
-    al quale viene aggiunto un nuovo evento da ascoltare ("addEventListener"):
+    al quale viene aggiunto un nuovo evento da ascoltare ("addEventListener"): <br>
     quell'evento da ascoltare e' il click.
     Quando viene premuto il pulsante viene eseguita la funzione
     che imposta window.location.href (URL attuale) a "/#/" .
@@ -1556,15 +1556,17 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
     
     Con html iniettato:
     ```html
-    <div class="page">
-        <div class="container">
-            <h1 class="text-container title">Progetto 100 + 100</h1>
+    <div id="app">
+        <div class="page">
+            <div class="container">
+                <h1 class="text-container title">Progetto 100 + 100</h1>
 
-            <div id="floorplan" ref="floorplan" class="floorplan"> </div>
+                <div id="floorplan" ref="floorplan" class="floorplan"> </div>
 
-            <div class="btn-group fixed-bottom" role="group">
-                <button v-on:click="gotoinfos" type="button" class="btn bg-color halfpage"> {{ infoprogetto }} </button>
-                <button v-on:click="gotooptions" type="button" class="btn bg-color halfpage"> {{ impostazioni }} </button>
+                <div class="btn-group fixed-bottom" role="group">
+                    <button v-on:click="gotoinfos" type="button" class="btn bg-color halfpage"> {{ infoprogetto }} </button>
+                    <button v-on:click="gotooptions" type="button" class="btn bg-color halfpage"> {{ impostazioni }} </button>
+                </div>
             </div>
         </div>
     </div>
@@ -1870,11 +1872,25 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
 
     ##### Graph
 
+    ![](https://i.imgur.com/WLxOBgX.png)
+
+    graph.js e' la pagina/componente che si occupa di visualizzare i grafici.
+
     TODO: documentare pagina graph
     
     [Torna su](#sezioni-documentazione)
 
     ##### Options
+
+    ![](https://i.imgur.com/YYGBdPq.png)
+    ![](https://i.imgur.com/UwtuSxs.png)
+
+    options.js e' la pagina/componente che contiene le impostazioni, permette di:
+    * selezionare il range timestamp delle rilevazioni da visualizzare nei grafici
+    * selezionare il colore dell'interfaccia
+    * selezionare la planimetria
+    * vedere lo spazio libero e occupato
+    * vedere l' RSSI dei nodemcu
 
     TODO: documentare pagina options
     
@@ -1882,7 +1898,113 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
 
     ##### Infos
 
-    TODO: documentare pagina infos
+    ![](https://i.imgur.com/HCK1New.png)
+
+    infos.js e' la pagina/componente che contiene le informazioni relative al progetto.
+
+    Quando viene visitata la pagina l'html contenuto nella proprieta' "template"
+    viene iniettata al posto di ```<router-view></router-view>``` all'interno del container vue.
+
+    La maggior parte del componente e' composta da html nella proprieta' "template".
+
+    Quando viene caricata la pagina viene eseguita la funzione in "mounted":
+
+    ```js
+    this.goBack(); // imposta touch
+    ```
+
+    La prima riga richiama la funzione goBack() in "methods" per permettere
+    all'utente di tornare alla pagina principale
+
+        goBack()
+    Questa e' tutto il codice della funzione:
+    ```js
+    goBack: function () {
+            /* Imposta touch per tornare indietro */
+            if (boold) {
+                console.log("aggiungo il touch");
+            }
+
+            /* Pulsante per tornare indietro */
+            var backbutton = document.getElementById("backbutton");
+            backbutton.addEventListener("click", function () {
+                window.location.href = "/#/";
+            })
+
+            var hammertime = new Hammer(document.getElementById('app'));
+            hammertime.on('swipe', function (ev) {
+                if (boold) {
+                    console.log("delta X: ", ev.deltaX);
+                }
+
+                if (ev.deltaX > 100) {
+                    // se lo swipe verso sinistra di 100px
+                    window.location.href = "/#/"; // torna pagina precedente/principale
+                }
+            });
+        }
+    ```
+
+    In particolare:
+    ```js
+    var backbutton = document.getElementById("backbutton");
+        backbutton.addEventListener("click", function () {
+            window.location.href = "/#/";
+        })
+    ```
+    la variabile backbutton contiene l'elemento con id "backbutton",
+    cioe' il pulsante che serve per tornare indietro,
+    al quale viene aggiunto un nuovo evento da ascoltare ("addEventListener"): <br>
+    quell'evento da ascoltare e' il click.
+    Quando viene premuto il pulsante viene eseguita la funzione
+    che imposta window.location.href (URL attuale) a "/#/" .
+    Quindi, se la pagina viene richiesta dal raspberry stesso, rimanda a http://localhost/#/, cioe' la home.
+
+    Poi viene usato hammer.js per rilevare lo swipe:
+    ```js
+    var hammertime = new Hammer(document.getElementById('app'));
+            hammertime.on('swipe', function (ev) {
+                if (boold) {
+                    console.log("delta X: ", ev.deltaX);
+                }
+
+                if (ev.deltaX > 100) {
+                    // se lo swipe verso sinistra di 100px
+                    window.location.href = "/#/"; // torna pagina precedente/principale
+                }
+            });
+    ```
+    La prima istruzione definisce un'istanza di hammer.js a
+    cui si passa l'elemento da ascoltare (l'elemento con id="app", quindi il container vue, tutta la pagina)
+
+    mentre l'istruzione successiva dice che quando ("on") avviene uno swipe ("swipe")
+    esegui la funzione che prende come parametro ev, l'evento stesso con le sue proprieta'.
+
+    La proprieta' da osservare e' deltaX, cioe' la quantita' di pixel
+    con cui il dito si e' mosso da sinistra a destra ("X" = asse x) o viceversa.
+
+    Quando la quantita' di pixel e' maggiore di 100 imposta window.location.href (URL attuale) a "/#/".
+
+    ---
+
+    ```js
+    var checksize = window.matchMedia("(max-width: 400px)"); // controllo se larghezza schermo < 400px 
+    if (checksize.matches) {
+        // se e' minore di 400px
+        this.title = "Progetto";   // cambio titolo
+        this.slogan = "100 + 100"; // e slogan (andrebbero fuori pagina)
+    }
+    ```
+    > "this" permette di controllare/richiamare direttamente la variabile (o funzione)
+    > nell'oggetto/componente
+
+    Prima viene verificato se lo schermo ha una grandezza di massimo 400px:
+    se la condizione e' vera viene modificata la variabile "title" contenuta in "data"
+    da "Progetto 100+100" a "Progetto" e 
+    la variabile "slogan" da "Temperatura e umidita' al 100% sotto controllo" a "100+100" 
+    permettendo all'intero testo di rimanere all'interno della pagina
+
+    La variabile "persone" contenente "Classe 4AT, anno scolastico 2018/2019" viene usata in fondo alla pagina.
 
     [Torna su](#sezioni-documentazione)
 
