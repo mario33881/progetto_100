@@ -28,22 +28,21 @@
 
     function getOptions($t_mysqli, $t_dbtable){
         /**
-         * Questa funzione si occupa di OTTENERE le OPZIONI dell'utente da "getoptions.php".
+         * Questa funzione si occupa di OTTENERE le OPZIONI dell'utente dalla tabella t_options.
          *
-         * Esegue una GET request dal file php "getoptions.php" per ottenere il json
+         * Esegue l'istruzione SQL per ottenere il json
          * delle impostazioni scelte dall'utente:
-         * - color_scheme: dato non ancora utilizzato,
-         *                 permettera' di far scegliere all'utente lo stile delle pagine
+         * - color_scheme: nome del colore selezionato dall'utente
          *
          * - min_timestamp: timestamp impostato come data di partenza per la visualizzazione dati
          *
          * - max_timestamp: timestamp impostato come data massima per la visualizzazione dati
          *
-         * Queste opzioni verranno restituite sotto forma di array.
+         * Infine viene restituito il json.
          *
          * @since 1.0.0
          *
-         * @return array Opzioni utente da DB
+         * @return json Opzioni utente da DB
         */
 
         // QUERY PER OTTENERE I DATI DALLA TABELLA
@@ -63,7 +62,7 @@
          *
          * Controlla i parametri per eseguire la query attraverso l'oggetto connessione $t_mysqli:
          * - se $min_timestamp == 0 e $max_timestamp == 0: prende tutti i dati
-          * - altrimenti seleziona i dati che hanno timestamp compreso fra i due parametri
+         * - altrimenti seleziona i dati che hanno timestamp compreso fra i due parametri
          *
          * Dopo aver ottenuto un array con i dati utili, li "restituisce" sotto forma di json
          *

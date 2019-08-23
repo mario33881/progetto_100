@@ -36,6 +36,7 @@
                     * [planselector.php](#planselector.php)
                     * [getlatestdata.php](#getlatestdata.php)
                 * [Graph](#graph)
+                    * [getdata.php](#getdata.php)
                 * [Options](#options)
                 * [Infos](#infos)
             * [Inizializzazione Vue Router e Vue](#inizializzazione-vue-router-e-vue)
@@ -889,7 +890,7 @@ La pagina comincia a richiedere tutti i file css:
     Nello specifico:
     1. Lo script importa lo script ```db_connection.php```:
 
-        * ```db_connection.php```, dopo aver disabilitato la visualizzazione dei warning (verranno gestiti visualizzandoli per poi terminare lo script)
+        * disabilita la visualizzazione dei warning (verranno gestiti visualizzandoli per poi terminare lo script)
         * viene definita la funzione ```dbconn($dbname)```:
 
                 dbconn($dbname)
@@ -1876,8 +1877,440 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
 
     graph.js e' la pagina/componente che si occupa di visualizzare i grafici.
 
-    TODO: documentare pagina graph
+    Quando viene visitata la pagina l'html contenuto nella proprieta' "template"
+    viene iniettata al posto di ```<router-view></router-view>``` all'interno del container vue.
+
+    Stato "originale" del container:
+    ```html
+    <!-- Contenitore vue -->
+    <div id="app">
+        <transition name="slide-fade">
+            <!-- Animazione cambio pagine -->
+            <router-view></router-view> <!-- Pagina visualizzata -->
+        </transition>
+    </div>
+    ```
     
+    Con html iniettato:
+    ```html
+    <div id="app">
+        <div>
+            <div class="row mb-0">
+                <div class="col-sm-12 col-sm-offset-2 ">
+                    <div class="panel panel-primary ">
+                        <div class="panel-heading">
+                            <div class="center-text-vert">
+                                <button type="button" id="backbutton" class="btn btn-sm align-left mb-0 bg-color"> < </button>
+                                <h2 class="text-container title center"> Temperatura {{stanza}}</h2>   
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+  
+            <div class="graph-container">
+                <canvas id="tempgraph"></canvas>
+            </div>
+                        
+            <h2 class="text-container title"> Umidita' {{stanza}}</h2>
+            
+            <div class="graph-container">
+                <canvas id="humgraph"></canvas>
+            </div>
+
+            <span class="bg-color" style="display:none"> </span> 
+        </div>
+    </div>
+    ```
+    > {{ stanza }} viene riempito dinamicamente dalla proprieta' "stanza" passata del URL <br>
+    > ( /graph/:stanza ). Il componente accetta il parametro grazie alla definizione della proprieta' ```props : ["stanza"]```
+
+    In particolare:
+    
+    ![](/images/graph-temptitle.png)
+
+    ```html
+    <div class="row mb-0">
+        <div class="col-sm-12 col-sm-offset-2 ">
+            <div class="panel panel-primary ">
+                <div class="panel-heading">
+                    <div class="center-text-vert">
+                        <button type="button" id="backbutton" class="btn btn-sm align-left mb-0 bg-color"> < </button>
+                        <h2 class="text-container title center"> Temperatura {{stanza}}</h2>   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    ```
+    Tutto e' contenuto in unico div con classi:
+    * ".row" : indica che e' una riga
+    * "mb-0" : toglie il margine inferiore
+
+    Dentro al div e' contenuto un altro div che con la classe .col-sm-12 occupa tutta la lunghezza
+
+    Il pulsante ha le classi:
+    * "btn" : stile del pulsate
+    * "btn" : dimensione del pulsante piu' piccola
+    * "align-left" : allinea a sinistra il pulsante
+    * "mb-0" : toglie i margini inferiori
+    * "bg-color" : colore custom
+
+    Il titolo ha le classi:
+    * "text-container": centra verticalmente e orizzontalmente il testo nell'elemento
+    * "title" : imposta l'altezza dell'elemento
+    * "center" : centra orizzontalmente l'elemento con il titolo 
+    (aggiunge margine a destra grande quanto il pulsante)
+
+    ```html
+    <div class="graph-container">
+        <canvas id="tempgraph"></canvas>
+    </div>
+    ```
+    Viene creato il div contenente il canvas con il grafico della temperatura
+
+    La classe "graph-container" del div imposta la sua altezza
+
+    L'id "tempgraph" viene usato per selezionare il canvas per poterci inserire il grafico
+
+    ```html
+    <h2 class="text-container title"> Umidita' {{stanza}}</h2>
+    ```
+    E' il titolo del grafico delle umidita'
+    Le sue classi sono:
+    * "text-container": centra verticalmente e orizzontalmente il testo nell'elemento
+    * "title" : imposta l'altezza dell'elemento
+
+    ```html
+    <div class="graph-container">
+        <canvas id="humgraph"></canvas>
+    </div>
+    ```
+    Viene creato il div contenente il canvas con il grafico dell'umidita'
+
+    La classe "graph-container" del div imposta la sua altezza
+
+    L'id "humgraph" viene usato per selezionare il canvas per poterci inserire il grafico
+
+    ```html
+    <span class="bg-color" style="display:none"> </span>
+    ```
+    Questo elemento non e' posizionato nel dom ("display:none")
+    ma possiede la classe "bg-color" che definisce i colori custom derivati
+    dalla selezione dell'utente
+
+    > Questo elemento viene usato da javascript per recuperare i colori
+    > da usare per il grafico. L'elemento era stato creato quando non esisteva il pulsante
+    > per tornare indietro: visto che i colori vengono recuperati dal primo elemento
+    > che ha la classe "bg-color" (quindi il pulsante) si potrebbe rimuovere lo span.
+
+    ---
+
+    Quando la pagina viene caricata viene eseguita la funzione nella proprieta' "mounted" che
+    richiama dall'oggetto "methods" la funzione makeGraphs()
+    > Prima viene salvata nella variabile "graphfunc" per poterla usare con setInterval()
+
+        makeGraphs()
+    La funzione si occupa di recuperare dalla funzione getGraphColor() 
+    il vettore con i valori red, green e blue del colore da usare per i grafici...
+
+        getGraphColor()
+    Recupera dall'elemento con classe .bg-color il suo colore di sfondo
+    e lo restituisce in un array che contiene i valori red, green e blue.
+
+    ...poi verifica se la funzione e' eseguita quando l'utente e' nella pagina dei grafici
+    verificando che l'url contenga "graph"
+    > Questo serve per bloccare il setInterval che continua ad aggiornare i grafici anche dopo
+    > essere usciti dalla pagina: provocava l'esecuzione multipla della funzione
+    > che terminavano solo quando veniva ricaricata la pagina.
+    > Ora quando la condizione e' falsa viene richiamato clearInterval()
+
+    recupera dall'URL la stanza attuale e usa axios.js per ottenere le rilevazioni
+    dalla pagina php ```/static/php/getdata.php```
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+    ###### getdata.php
+
+    Lo script importa lo script ```db_connection.php``` che:
+
+    * disabilita la visualizzazione dei warning (verranno gestiti visualizzandoli per poi terminare lo script)
+    * viene definita la funzione ```dbconn($dbname)```:
+
+            dbconn($dbname)
+            
+        Questa funzione si occupa di connettersi al DB, e operare sulla tabella passati come parametri.
+        La funzione recupera dal file 'credentials.ini' username e password per accedere al DB in locale.
+         
+        il parametro verra' usato per accedere al DB.
+            
+        La funzione restituira' l'oggetto connessione con la connessione avvenuta correttamente
+
+        @since 1.0.0                                                                 <br>
+        @param string $dbname  nome del database                                     <br>
+        @return object $conn oggetto connessione (connessione avvenuta con successo) <br>
+
+        
+    * viene definita la funzione ```queryToJson($t_mysqli, $t_query)```:
+
+            queryToJson($t_mysqli, $t_query)
+
+        Questa funzione si occupa di eseguire la query e di resituire i dati in formato json.
+         
+        Esegue la query, ottiene i dati e li inserisce in un array,
+        svuota la memoria occupata dal risultato della query e restituisce l'array in formato json
+
+        @since 1.0.0
+    
+        @param object $t_mysqli oggetto connessione
+        @param string $t_query query da eseguire nel database connesso in $t_mysqli
+         
+        @return string json_encode($data) json del risultato della query
+    
+    Imposta il content type a "application/json", poi si connette al database
+    usando la funzione dbconn() e richiama la funzione getOptions()
+
+        getOptions()
+    Questa funzione si occupa di OTTENERE le OPZIONI dell'utente dalla tabella t_options.
+
+    Esegue l'istruzione SQL per ottenere il json
+    delle impostazioni scelte dall'utente:
+    * color_scheme: nome del colore selezionato dall'utente
+    * min_timestamp: timestamp impostato come data di partenza per la visualizzazione dati
+    * max_timestamp: timestamp impostato come data massima per la visualizzazione dati
+       
+    Infine viene restituito il json.
+         
+    @since 1.0.0
+         
+    @return json Opzioni utente da DB
+
+    Il JSON ottenuto viene convertito in array con json_decode()
+    da cui vengono recuperati i timestamp minimo e massimo dei dati 
+    da visualizzare nel grafico.
+
+    Infine viene richiamata la funzione getData()
+
+        getData($t_mysqli, $t_dbtable, $min_timestamp, $max_timestamp)
+    Ottiene tutti o parte dei dati dal DB
+         
+    Controlla i parametri per eseguire la query attraverso l'oggetto connessione $t_mysqli:
+    - se $min_timestamp == 0 e $max_timestamp == 0: prende tutti i dati
+    - altrimenti seleziona i dati che hanno timestamp compreso fra i due parametri
+    
+    Dopo aver ottenuto un array con i dati utili, li "restituisce" sotto forma di json
+    
+    @since 1.0.0
+    
+    @see queryToJson($t_mysqli, $query) in 'db_connection.php'
+    
+    @param object $t_mysqli oggetto connessione
+    @param string $t_dbtable nome tabella nel database connesso in $t_mysqli
+    
+    @param int $min_timestamp timestamp di partenza per selezione dati
+    @param int $max_timestamp timestamp massimo per selezione dati
+
+    Il JSON ottenuto viene visualizzato al client che ha eseguito la richiesta
+    
+    [Torna su](#sezioni-documentazione)
+
+    ----
+    
+    makeGraphs, appena axios.js riceve la risposta da getdata.php,
+    legge il contenuto della risposta (resp.data) una rilevazione alla volta
+
+    Prima viene verificato che l'id del nodo corrisponde al parametro
+    nell'URL indicante la stanza di cui visualizzare i grafici,
+    se la stanza e l'id node corrispondono viene recuperato
+    il timestamp della rilevazione che poi viene passato alla funzione TimestampToDate()
+
+        TimestampToDate(timestamp)
+    Questa funzione converte il timestamp passato come parametro in data "umana".
+    Per farlo crea una istanza di "Date()" passandogli timestamp * 1000
+    > Date si aspetta il timestamp in millisecondi
+
+    e dalla istanza di Date vengono recuperate tutte le informazioni
+    per formare una stringa con la data con il formato "americano": "mm/gg/yyyy hh:mm".
+    Questa stringa viene infine restituita
+
+    makeGraphs poi inserisce dei a 3 vettori separati la stringa con la data,
+    l'umidita' e la temperatura.
+
+    Vengono creati 2 oggetti per creare i grafici:
+    ```js
+    var charttemps = {
+        labels: v_timestamps, // timestamp asse x
+        datasets: [{
+            backgroundColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 0.75)', // colore sfondo grafico
+            borderColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 0.75)', // colore bordo del grafico
+            hoverBackgroundColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1)',    // colore sfondo on hover ("passandoci sopra")
+            hoverBorderColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1)',    // colore bordo on hover  ("passandoci sopra")
+            data: v_temps // temperature asse y
+        }],
+    };
+    ```
+    Dove la proprieta':
+    * "labels" e' il vettore con i dati da visualizzare sull'asse x, il vettore con i timestamp convertiti in data
+    * "datasets" e' un vettore di oggetti da visualizzare sul grafico sull'asse y
+        * Il grafico visualizza i dati nel vettore "data": le temperature in questo caso 
+        (il funzionamento e' analogo per le umidita')
+        * "backgroundColor" e' il colore dello sfondo: e' il colore selezionato dall'utente con opacita' 0.75 (75% visibile)
+        * "borderColor" e' il colore del bordo del grafico: e' il colore selezionato dall'utente con opacita' 0.75 (75% visibile)
+        * "hoverBackgroundColor" e' il colore dello sfondo al passaggio del mouse: e' il colore selezionato dall'utente con opacita' 1 (100% visibile)
+        * "hoverBorderColor" e' il colore del bordo al passaggio del mouse: e' il colore selezionato dall'utente con opacita' 1 (100% visibile)
+    
+    ```js
+    var ctxtemps = document.getElementById("tempgraph"); // canvas grafico temperature
+    ```
+    > la stessa cosa viene fatta anche per il grafico dell'umidita'
+
+    Poi vengono recuperati i canvas in cui visualizzare i grafici
+
+    ```js
+    // creo oggetto grafico delle temperature
+    var tempGraph = new Chart(ctxtemps, { // nel canvas temperature creo grafico
+        type: 'line',     // tipo "linea"
+        data: charttemps, // dati temperature
+        options: {
+            responsive: true,           // si adatta allo schermo
+            maintainAspectRatio: false, // rispetta altezza del div contenente il canvas
+            legend: {
+                display: false // Toglie la legenda ( non visualizza informazioni utili... )
+            },
+            tooltips: {
+                callbacks: {
+                    label: function (tooltipItem) {
+                        return tooltipItem.yLabel; // toglie legenda
+                    }
+                }
+            },
+            animation: {
+                duration: 0 // "disabilita" le animazioni (brutto effetto "jump" del grafico a causa update del grafico frequente)
+            }
+        }
+    });
+    ```
+    e infine vengono creati i grafici:
+    viene creata un'istanza per grafico che richiede come 
+    primo parametro l'elemento in cui inserire il grafico
+    e come secondo parametro le proprieta'
+
+    Lista delle proprieta':
+    * "type": tipo di grafico
+    * "data": oggetto creato in precedenza con i dati da visualizzare
+    * "options" oggetto con le opzioni:
+        * "responsive" rende responsivo il grafico
+        * "maintainAspectRatio" mantiene le proporzioni tra altezza e lunghezza
+        * "legend" oggetto con le proprieta' della legenda:
+            * "display" bool che permette di nascondere/visualizzare la legenda
+        * "tooltips" oggetto con proprieta' dei tooltip (messaggi che appaiono "on hover"):
+            ```js
+            callbacks: {
+                    label: function (tooltipItem) {
+                        return tooltipItem.yLabel; // toglie legenda
+                    }
+                }
+            ```
+            permette di togliere la legenda
+        * "animation" oggetto che permette di configurare le animazioni:
+            * "duration" indica la durata dell'animazione
+        > Le animazioni sono state rimosse perche' vengono eseguite
+        > ad ogni aggiornamento del grafico e rendono frustrante la lettura dei dati:
+        > l'animazione "solleva" i punti con i dati a partire dall'asse x
+        > e la loro posizione si resetta ad ogni inizio animazione
+    
+    ```js
+    tempGraph.update(); // Per aggiornare i dati del grafico ad ogni richiesta
+    ```
+    Indica al grafico che verra' aggiornato da nuovi dati
+
+    ---
+
+    Quando la funzione che popola i grafici e' terminata
+    per la prima volta viene richiamata la funzione
+    goBack() per permettere
+    all'utente di tornare alla pagina principale
+
+        goBack()
+    Questa e' tutto il codice della funzione:
+    ```js
+    goBack: function () {
+            /* Imposta touch per tornare indietro */
+            if (boold) {
+                console.log("aggiungo il touch");
+            }
+
+            /* Pulsante per tornare indietro */
+            var backbutton = document.getElementById("backbutton");
+            backbutton.addEventListener("click", function () {
+                window.location.href = "/#/";
+            })
+
+            var hammertime = new Hammer(document.getElementById('app'));
+            hammertime.on('swipe', function (ev) {
+                if (boold) {
+                    console.log("delta X: ", ev.deltaX);
+                }
+
+                if (ev.deltaX > 100) {
+                    // se lo swipe verso sinistra di 100px
+                    window.location.href = "/#/"; // torna pagina precedente/principale
+                }
+            });
+        }
+    ```
+
+    In particolare:
+    ```js
+    var backbutton = document.getElementById("backbutton");
+        backbutton.addEventListener("click", function () {
+            window.location.href = "/#/";
+        })
+    ```
+    la variabile backbutton contiene l'elemento con id "backbutton",
+    cioe' il pulsante che serve per tornare indietro,
+    al quale viene aggiunto un nuovo evento da ascoltare ("addEventListener"): <br>
+    quell'evento da ascoltare e' il click.
+    Quando viene premuto il pulsante viene eseguita la funzione
+    che imposta window.location.href (URL attuale) a "/#/" .
+    Quindi, se la pagina viene richiesta dal raspberry stesso, rimanda a http://localhost/#/, cioe' la home.
+
+    Poi viene usato hammer.js per rilevare lo swipe:
+    ```js
+    var hammertime = new Hammer(document.getElementById('app'));
+            hammertime.on('swipe', function (ev) {
+                if (boold) {
+                    console.log("delta X: ", ev.deltaX);
+                }
+
+                if (ev.deltaX > 100) {
+                    // se lo swipe verso sinistra di 100px
+                    window.location.href = "/#/"; // torna pagina precedente/principale
+                }
+            });
+    ```
+    La prima istruzione definisce un'istanza di hammer.js a
+    cui si passa l'elemento da ascoltare (l'elemento con id="app", quindi il container vue, tutta la pagina)
+
+    mentre l'istruzione successiva dice che quando ("on") avviene uno swipe ("swipe")
+    esegui la funzione che prende come parametro ev, l'evento stesso con le sue proprieta'.
+
+    La proprieta' da osservare e' deltaX, cioe' la quantita' di pixel
+    con cui il dito si e' mosso da sinistra a destra ("X" = asse x) o viceversa.
+
+    Quando la quantita' di pixel e' maggiore di 100 imposta window.location.href (URL attuale) a "/#/".
+
+    ---
+
+    Per ultimo viene eseguito setInterval per aggiornare
+    i grafici ogni 10 secondi.
+
+    setInterval restituisce un id che puo' essere usato
+    da clearInterval per fermare il "loop",
+    questo valore viene salvato in "intervalId" 
+
     [Torna su](#sezioni-documentazione)
 
     ##### Options
