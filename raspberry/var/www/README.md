@@ -26,18 +26,44 @@
         * [HTML](#html)
         * [Javascript](#javascript)
             * [Utility javascript](#utility-javascript)
-                * [SVG.JS](#svg.js)
-                * [Axios.JS](#axios.js)
-                * [Hammer.JS](#hammer.js)
-                * [t2ts.JS](#t2ts.js)
+                * [SVG.JS](#svgjs)
+                * [Axios.JS](#axiosjs)
+                * [Hammer.JS](#hammerjs)
+                * [t2ts.JS](#t2tsjs)
             * [Vue e Vue router](#vue-e-vue-router)
             * [Descrizione pagine Frontend](#descrizione-pagine-frontend)
                 * [Home](#home)
-                    * [planselector.php](#planselector.php)
-                    * [getlatestdata.php](#getlatestdata.php)
+                    * [planselector.php](#planselectorphp)
+                    * [getlatestdata.php](#getlatestdataphp)
                 * [Graph](#graph)
                     * [getdata.php](#getdata.php)
                 * [Options](#options)
+                    * [Gestione timestamp grafici](#gestione-timestamp-grafici)
+                    * [Gestione colore interfaccia](#gestione-colore-interfaccia)
+                        * [sendcolor.php](#sendcolor.php)
+                        * [get_colorslist.php](#get_colorslistphp)
+                        * [getcolors.php](#getcolorsphp)
+                    * [Gestione planimetria](#gestione-planimetria)
+                        * [sendmap.php](#sendmapphp)
+                    * [Visualizzazione uso spazio sistema](#visualizzazione-uso-spazio-sistema)
+                    * [Visualizzazione rssi](#visualizzazione-rssi)
+                    * [Funzione mounted()](#options-mounted-function)
+                        * [sendopt.php](#sendoptphp)
+                            > Nota: sendopt.php non viene chiamato in mounted()
+                            > ma l'evento che porta ad eseguire la get request verso
+                            > sendopt.php viene configurato qui
+                        * [getrssi.php](#getrssiphp)
+                            > Nota: getrssi.php non viene chiamato in mounted()
+                            > ma il richiamo della funzione che porta ad eseguire la get request verso
+                            > getrssi.php viene eseguito qui
+                        * [diskinfo.php](#diskinfophp)
+                            > Nota: diskinfo.php non viene chiamato in mounted()
+                            > ma il richiamo della funzione che porta ad eseguire la get request verso
+                            > diskinfo.php viene eseguito qui
+                        * [showmaps.php](#showmapsphp)
+                            > Nota: showmaps.php non viene chiamato in mounted()
+                            > ma il richiamo della funzione che porta ad eseguire la get request verso
+                            > showmaps.php viene eseguito qui
                 * [Infos](#infos)
             * [Inizializzazione Vue Router e Vue](#inizializzazione-vue-router-e-vue)
     * [Descrizione per componente](#descrizione-per-componente)
@@ -2106,10 +2132,10 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
     
     @see queryToJson($t_mysqli, $query) in 'db_connection.php'
     
-    @param object $t_mysqli oggetto connessione
+    @param object $t_mysqli oggetto connessione                              <br>
     @param string $t_dbtable nome tabella nel database connesso in $t_mysqli
     
-    @param int $min_timestamp timestamp di partenza per selezione dati
+    @param int $min_timestamp timestamp di partenza per selezione dati <br>
     @param int $max_timestamp timestamp massimo per selezione dati
 
     Il JSON ottenuto viene visualizzato al client che ha eseguito la richiesta
@@ -2325,7 +2351,1048 @@ Per ultimi vengono importati e eseguiti gli script Javascript:
     * vedere lo spazio libero e occupato
     * vedere l' RSSI dei nodemcu
 
-    TODO: documentare pagina options
+    Quando viene visitata la pagina l'html contenuto nella proprieta' "template"
+    viene iniettata al posto di ```<router-view></router-view>``` all'interno del container vue.
+
+    Tutto e' contenuto in un div con classe "container" per mantenere tutto il contenuto
+    della pagina al centro grazie a dei margini laterali.
+
+    ```html
+    <div class="row mb-0">
+        <div class="col-sm-12 col-sm-offset-2 ">
+            <div class="panel panel-primary ">
+                <div class="panel-heading">
+                    <div class="center-text-vert">
+                        <button type="button" id="backbutton" class="btn btn-sm align-left mb-0 bg-color"> < </button> 
+                        <h1 class="text-container title center"> Opzioni </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    ```
+    Prima viene creata la riga contenente il testo "Opzioni" con il pulsante sulla sinistra per tornare indietro
+    separato dal resto con una riga orizzontale.
+
+    <a id="gestione-timestamp-grafici"></a>
+
+    Poi viene creata la sezione contenente le impostazioni relative ai grafici:
+
+    ```html
+    <h4 class="text-container"> Visualizzazione grafici</h4>
+    <div class="container text-center">
+        <!-- Qui vengono visualizzati tutti i messaggi errori/successo, ecco cosa viene creato con JS: -->
+        <!-- <div id="alerts-container" class="fade show text-center" role="alert"></div> -->
+
+        <!-- <h1 id="title">Impostazioni</h1> -->
+        <span id="title"></span>
+
+        <!-- A cosa serve questa pagina -->
+        <p>Da qui puoi selezionare quale parte di dati visualizzare nei grafici:</p>
+        <ul>
+            <li>Scegli se voler visualizzare tutti i dati o solo una parte</li>
+            <li>se si vuole visualizzare una parte, selezionare date e tempi di limitazione</li>
+        </ul>
+    </div>
+    ```
+    Questo html spiega a cosa serve la sezione e crea lo span con id="title"
+    sopra al quale verra' creato l'elemento che visualizza lo stato dell'operazione
+    eseguita dall'utente
+
+    ```html
+    <div class="container text-center">
+        <!-- Pulsante -->
+        <div class="switch">
+            <label>
+                Tutto
+                <input v-on:click="isswitched = !isswitched" id="mySwitch" type="checkbox">
+                <span class="lever"></span>
+                Parziale
+            </label>
+        </div>
+    </div>
+    ```
+    Poi viene creato un pulsante centrato nella pagina che quando viene cliccato
+    inverte lo stato della variabile "isswitched" contenuta nella proprieta' "data" del componente
+
+    ```html
+    <!-- Container con data iniziale e data finale -->
+    <div v-show="isswitched" class="container">
+        <!-- Data iniziale -->
+        <h3>Da:</h3>
+
+        <!-- Selezione giorno-->
+        <div class="md-form">
+            <input type="text" id="fromdate" class="form-control datepicker">
+            <label for="fromdate">Seleziona giorno</label>
+        </div>
+
+        <!-- Selezione ore minuti -->
+        <div class="md-form" style="touch-action: none;">
+            <input type="text" id="fromtime" class="form-control timepicker">
+            <label for="fromtime">Seleziona ore/minuti</label>
+        </div>
+    ...
+
+    ```
+    Questo div ha la direttiva "v-show" di vue che gli indica di essere visualizzato
+    solo quando isswitched e' vera. Il div contiene il timepicker (html superiore)
+    e il datepicker (html inferiore)
+
+    ```html
+    ...
+
+        <!-- Data finale -->
+        <h3>A:</h3>
+
+        <!-- Selezione giorno-->
+        <div class="md-form">
+            <input type="text" id="todate" class="form-control datepicker">
+            <label for="todate">Seleziona giorno</label>
+        </div>
+
+        <!-- Selezione ore minuti -->
+        <div class="md-form" style="touch-action: none;">
+            <input type="text" id="totime" class="form-control timepicker">
+            <label for="totime">Seleziona ore/minuti</label>
+        </div>
+
+    </div>
+    ```
+    > Tutti gli input hanno un id per poter ottenere il valore selezionato dall'utente con javascript
+
+    ```html
+    <div class="container text-center">
+        <button id="submit" type="button" class="btn bg-color">Conferma modifiche</button>
+    </div>
+
+    <hr>
+    ```
+    L'ultima parte relativa a questo "form" e' il pulsante per confermare le modifiche.
+
+    ---
+
+    <a id="gestione-colore-interfaccia"></a>
+    Poi viene creata la sezione per gestire i colori dell'interfaccia:
+
+    ```html
+    <h4 class="text-container">Colore interfaccia</h4>
+    <span id="colortitle"></span>
+
+    <p class="text-center"> Premi sul quadrato per selezionare il colore da usare per l'interfaccia</p>
+    <div class="container">
+        <div class="row">
+            <div v-for="color in colors" style="" class="col-2">
+                <div v-on:click="sendColor(color.color_name)" class="square"
+                    v-bind:style="{ 'background-color': color.color_hex }">
+                    <div class="content">{{ checkScreen(color.color_name) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container text-center">
+        <button id="submit" type="button" v-on:click="moreColors" class="btn bg-color">Mostra altri colori</button>
+    </div>
+
+    <hr>
+    ```
+
+    La parte funzionale e':
+    ```html
+    <div class="container">
+        <div class="row">
+            <div v-for="color in colors" style="" class="col-2">
+                <div v-on:click="sendColor(color.color_name)" class="square"
+                    v-bind:style="{ 'background-color': color.color_hex }">
+                    <div class="content">{{ checkScreen(color.color_name) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    ```
+    Container che contiene i colori:
+    viene usata la direttiva "v-for" per scorrere il contenuto dell'array colors
+    contenuto nella proprieta' "data"
+
+    Per ogni colore viene creato un div con classe "square" che quando viene cliccato ("v-on:click")
+    richiama la funzione "sendColor" (contenuta in "methods") a cui viene passata la proprieta' "color_name"
+    del colore stesso (nome del colore).
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+        sendColor(color)
+    Usa axios.js per fare una get request verso il file PHP ""/static/php/sendcolor.php"
+    passando come parametro chiamato "color" la stringa passata dalla funzione, "color"
+
+    ###### sendcolor.php
+
+    Questo file recupera dall' URL i parametri GET, e li usa per modificare il record delle impostazioni
+    
+    Il programma accede al DB, controlla se il parametro:
+    
+    - name_scheme: nome dell'insieme dei colori selezionati dagli utenti
+    
+    e' stato passato e se e' presente nella tabella dei colori selezionabili,
+    poi viene fatta una prima misura di prevenzione da dati indesiderati con il typecast:
+    il parametro deve essere una stringa.
+    
+    Viene effettuata la connessione al DB, viene controllato il successo di questa operazione
+    e poi viene attuata una seconda misura di sicurezza: l'escape dei dati:
+    quei caratteri che possono essere pericolosi in una query vengono preceduti da '\'.
+    
+    Ultima forma di prevenzione attuata sono le prepared statements:
+    la stringa SQL viene preparata sostituendo il '?' con la variabile "bind-ate",
+    deve essere una stringa.
+    
+    Infine viene eseguita la query e viene chiusa la connessione.
+    > Le prevenzioni sono state svolte per evitare SQL injections
+
+    Per assicurarsi che il colore sia esistente viene importato lo script get_colorslist.php
+    che importa a sua volta db_connection.php per permettere la connessione al database
+
+    [Torna su](#sezioni-documentazione)
+
+    ###### get_colorslist.php
+
+    Lo script importa lo script ```db_connection.php``` che:
+
+    * disabilita la visualizzazione dei warning (verranno gestiti visualizzandoli per poi terminare lo script)
+    * viene definita la funzione ```dbconn($dbname)```:
+
+            dbconn($dbname)
+            
+        Questa funzione si occupa di connettersi al DB, e operare sulla tabella passati come parametri.
+        La funzione recupera dal file 'credentials.ini' username e password per accedere al DB in locale.
+         
+        il parametro verra' usato per accedere al DB.
+            
+        La funzione restituira' l'oggetto connessione con la connessione avvenuta correttamente
+
+        @since 1.0.0                                                                 <br>
+        @param string $dbname  nome del database                                     <br>
+        @return object $conn oggetto connessione (connessione avvenuta con successo) <br>
+
+        
+    * viene definita la funzione ```queryToJson($t_mysqli, $t_query)```:
+
+            queryToJson($t_mysqli, $t_query)
+
+        Questa funzione si occupa di eseguire la query e di resituire i dati in formato json.
+         
+        Esegue la query, ottiene i dati e li inserisce in un array,
+        svuota la memoria occupata dal risultato della query e restituisce l'array in formato json
+
+        @since 1.0.0
+    
+        @param object $t_mysqli oggetto connessione
+        @param string $t_query query da eseguire nel database connesso in $t_mysqli
+         
+        @return string json_encode($data) json del risultato della query
+
+    Poi si connette al database e richiama la funzione get_colorslist()
+
+        get_colorslist($t_mysqli, $t_dbtable)
+    Questa funzione esegue la query per selezionare tutti i nomi dei colori dal DB, verranno restituiti in un array.
+    
+    La funzione esegue con la funzione queryToJson() la query
+    per selezionare tutti i colori dal DB e ottiene il JSON,
+    converte il JSON ottenuto in array che verra' restituito
+    
+    @since 1.0.0
+    
+    @param object $t_mysqli oggetto connessione gia' connesso al DB <br>
+    @param string $t_dbtable tabella da dove prendere i colori
+    
+    @return array $array_opts array di colori
+
+    l'array restituito viene salvato nell'array $colors_array 
+    pronto per poter essere usato da sendcolor.php
+
+    > Nota: bisogna evitare di importare uno script attraverso
+    > un altro script perche' rende difficile la modifica e la lettura del codice.
+    > Per sistemare il problema bisognerebbe implementare una funzione/condizione
+    > "main".
+    > ```if (!debug_backtrace()) {}``` dovrebbe permettere di risolvere il problema.
+
+    ---
+
+    Quando viene terminata la GET request viene creato un div
+    per indicare il successo dell'operazione.
+
+    Questo "alert" viene inserito prima dello span con id="colortitle"
+    che grazie a setTimeout() viene chiuso dopo 3 secondi.
+
+    Con un secondo setTimeout() viene ricaricata la pagina
+    dopo 3 secondi usando location.reload(true)
+    > true forza il download di tutta la pagina e di NON usare la cache
+
+    La pagina viene ricarica per permettere al CSS di essere
+    scaricato con il nuovo colore impostato
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+    ```html
+    <div class="container">
+        <div class="row">
+            <div v-for="color in colors" style="" class="col-2">
+                <div v-on:click="sendColor(color.color_name)" class="square"
+                    v-bind:style="{ 'background-color': color.color_hex }">
+                    <div class="content">{{ checkScreen(color.color_name) }}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    ```
+
+    Inoltre con la direttiva "v-bind" su "style" viene impostato il colore di sfondo ("background-color")
+    di ogni quadrato con il colore selezionabile.
+
+    Ogni quadrato contiene il nome del colore che, prima di essere visualizzato deve passare per la funzione "checkScreen"
+
+        checkScreen(color)
+    Viene controllato se lo schermo ha al massimo 800px di lunghezza:
+    se la condizione e' vera viene restituita una riga vuota,
+    perche' il testo sarebbe troppo grande per i quadrati,
+    altrimenti viene restituito color
+    
+    ```html
+    <div class="container text-center">
+        <button id="submit" type="button" v-on:click="moreColors" class="btn bg-color">Mostra altri colori</button>
+    </div>
+    ```
+    Per visualizzare altri colori oltre ai primi 6 e' possibile premere il pulsante "Mostra altri colori" 
+    che richiama la funzione moreColors
+
+        moreColors()
+    Incrementa di 12 la variabile "num" contenuta nella funzione della proprieta' data dell'oggetto
+    e richiama la funzione getColors passandogli "num"
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+    <a id="options-getcolors"></a>
+        getColors(num)
+    Usa axios.js per fare una get request alla pagina PHP "/static/php/getcolors.php"
+    passandogli come parametro "n" la variabile "num", il numero dei colori da restituire
+
+    ###### getcolors.php
+
+    Lo script importa lo script ```db_connection.php``` che:
+
+    * disabilita la visualizzazione dei warning (verranno gestiti visualizzandoli per poi terminare lo script)
+    * viene definita la funzione ```dbconn($dbname)```:
+
+            dbconn($dbname)
+            
+        Questa funzione si occupa di connettersi al DB, e operare sulla tabella passati come parametri.
+        La funzione recupera dal file 'credentials.ini' username e password per accedere al DB in locale.
+         
+        il parametro verra' usato per accedere al DB.
+            
+        La funzione restituira' l'oggetto connessione con la connessione avvenuta correttamente
+
+        @since 1.0.0                                                                 <br>
+        @param string $dbname  nome del database                                     <br>
+        @return object $conn oggetto connessione (connessione avvenuta con successo) <br>
+
+        
+    * viene definita la funzione ```queryToJson($t_mysqli, $t_query)```:
+
+            queryToJson($t_mysqli, $t_query)
+
+        Questa funzione si occupa di eseguire la query e di resituire i dati in formato json.
+         
+        Esegue la query, ottiene i dati e li inserisce in un array,
+        svuota la memoria occupata dal risultato della query e restituisce l'array in formato json
+
+        @since 1.0.0
+    
+        @param object $t_mysqli oggetto connessione
+        @param string $t_query query da eseguire nel database connesso in $t_mysqli
+         
+        @return string json_encode($data) json del risultato della query
+    
+    Imposta il content type a "application/json", poi si connette al database
+    usando la funzione dbconn() e richiama la funzione getColors()
+
+        getColors($t_mysqli, $t_dbtable)
+    Questa funzione esegue la query per selezionare i colori da visualizzare nella pagina impostazioni.
+    Il numero di colori da visualizzare e' contenuto nella variabile "n":
+    se non e' un valore numerico o non viene specificato nessun numero
+    vengono restituiti tutti i colori
+
+    @since 1.0.0
+    
+    @param object $t_mysqli oggetto connessione gia' connesso al DB
+    @param string $t_dbtable tabella da dove prendere colori
+    
+    @return string $json colori
+
+    Il json restituito viene infine visualizzato
+
+    [Torna su](#sezioni-documentazione)
+
+    [Torna alla documentazione della funzione mounted()](#options-mounted-function)
+
+    Se la risposta di axios.js comincia con ```<svg``` significa
+    che c'e' stato un errore di connessione al database:
+    l'errore viene visualizzato richiamando la funzione showAlert()
+
+        showAlert(t_text, t_status)
+    Questa funzione visualizza l'alert/messaggio con la struttura :
+            
+    ```html
+    <div id="alerts-container" class="fade show text-center alert alert-<$ t_status $>" role="alert"> <$ t_text $> </div>
+    ```
+    Dove:
+    * t_text e' il testo da visualizzare
+    * t_status e' lo status da visualizzare (success/danger...)
+
+    L'alert viene inserito prima dell'elemento con id "title"
+    e viene chiuso dopo 3 secondi con setTimeout()
+
+    Altrimenti sono stati ricevuti i colori che vengono memorizzati
+    nella variabile colors nella proprieta' data del componente
+
+    ---
+
+    <a id="gestione-planimetria"></a>
+    La sezione successiva alla sezione per la selezione dei colori
+    e' presente la sezione per selezionare la planimetria da utilizzare nella pagina principale
+
+    ```html
+    <h4 class="text-container">Tipo planimetria</h4>
+    <p class="text-center"> Premi sulla planimetria che vorresti nella pagina principale</p>
+    <div class="row">
+        <div v-for="(map, index) in maps" v-bind:class="mapclass(map)">
+            <div v-on:click="sendmap(map)" v-html="mapcontent(map)"></div>
+        </div>
+    </div>
+    ```
+    Viene usata la direttiva v-for per scorrere il vettore maps
+    che contiene o stringhe vuote o 
+    oggetti contentente le proprieta' "name" e "path" della planimetria
+
+    La direttiva "v-bind" su class imposta la classe uguale al 
+    valore restituito dalla funzione ```mapclass(map)```
+
+        mapclass(map)
+    Restituisce la classe per il container (div) della planimetria:
+    se map e' una stringa vuota viene restituita la classe "```col-2```",
+    classe di mdbootstrap che fa occupare al div 2 colonne su 12.
+    > Viene usato per separare due planimetrie
+    Altrimenti viene restituite le classi '```col-5```' e '```text-center```':
+    * ```col-5``` fa occupare alla planimetria 5 colonne su 12
+    * ```text-center``` centra il testo contenente il nome della mappa  
+
+    L'obiettivo di questa funzione e' quella di avere due colonne
+    con le planimetrie separate da una colonna centrale
+
+    All'interno del div viene creato un div che quando cliccato
+    (direttiva "v-on:click") esegue la funzione sendmap(map)
+    per inviare alla backend la mappa da visualizzare nella pagina principale.
+
+    Viene usata la direttiva "v-html" per impostare il contenuto del div
+    dinamicamente grazie alla funzione mapcontent(map)
+
+        mapcontent(map)
+    Restituisce in formato stringa il contenuto del div delle mappe
+    Se map != "" il contenuto e' un div che ha un paragrafo con il nome del file
+    e img con la mappa, altrimenti il div viene lasciato vuoto
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+        sendmap(map)
+    Gestisce click/touch delle mappe
+    quando una mappa viene premuta viene effettuata una get request
+    per salvare nel database la scelta dell'utente.
+    La pagina che riceve la GET request e' "/static/php/sendmap.php"
+    e il parametro chiamato "map" ottiene il valore di "map" passato dalla funzione
+
+    Dopo aver eseguito la GET request viene richiamata la funzione showAlert()
+    per visualizzare il successo dell'operazione
+
+    ###### sendmap.php
+
+    Questo file recupera dall' URL i parametri GET, e li usa per modificare il record delle impostazioni
+    
+    Il programma accede al DB, controlla che il parametro sia stato passato:
+    
+    - map: mappa da visualizzare
+    
+    Poi viene fatta una prima misura di prevenzione da dati indesiderati con il typecast:
+    il parametro deve essere una stringa.
+    
+    Se "map" e' la proprieta' "nome" di una mappa presente nell'array $maps (recuperato con la funzione getmaps() dall'omonimo file)  
+    viene effettuata la connessione al DB,
+     
+    viene controllato il successo di questa operazione
+    e poi viene attuata una seconda misura di sicurezza: l'escape dei dati:
+    quei caratteri che possono essere pericolosi in una query vengono preceduti da '\'.
+    
+    Ultima forma di prevenzione attuata sono le prepared statements:
+    la stringa SQL viene preparata sostituendo il '?' con la variabile "bind-ate",
+    che deve essere stringa.
+    
+    Infine viene eseguita la query per impostare la mappa nelle impostazioni e viene chiusa la connessione.
+    > Le prevenzioni sono state svolte per evitare SQL injections
+
+    Per funzionare sendmap.php usa gli script db_connection.php che:
+
+    * disabilita la visualizzazione dei warning (verranno gestiti visualizzandoli per poi terminare lo script)
+    * viene definita la funzione ```dbconn($dbname)```:
+
+            dbconn($dbname)
+            
+        Questa funzione si occupa di connettersi al DB, e operare sulla tabella passati come parametri.
+        La funzione recupera dal file 'credentials.ini' username e password per accedere al DB in locale.
+         
+        il parametro verra' usato per accedere al DB.
+            
+        La funzione restituira' l'oggetto connessione con la connessione avvenuta correttamente
+
+        @since 1.0.0                                                                 <br>
+        @param string $dbname  nome del database                                     <br>
+        @return object $conn oggetto connessione (connessione avvenuta con successo) <br>
+
+        
+    * viene definita la funzione ```queryToJson($t_mysqli, $t_query)```:
+
+            queryToJson($t_mysqli, $t_query)
+
+        Questa funzione si occupa di eseguire la query e di resituire i dati in formato json.
+         
+        Esegue la query, ottiene i dati e li inserisce in un array,
+        svuota la memoria occupata dal risultato della query e restituisce l'array in formato json
+
+        @since 1.0.0
+    
+        @param object $t_mysqli oggetto connessione
+        @param string $t_query query da eseguire nel database connesso in $t_mysqli
+         
+        @return string json_encode($data) json del risultato della query
+
+    e getmaps.php per ottenere le mappe presenti in "/static/img/maps"
+
+    [Torna su](#sezioni-documentazione)
+
+    ###### getmaps.php
+
+    Lo script definisce la funzione getmaps() usata da sendmap.php e showmaps.php
+    per ottenere la lista delle planimetrie presenti in "/static/img/maps"
+
+        getmaps($path)
+    Questa funzione restituisce un array con le planimetrie in "/static/img/maps".
+    
+    La funzione compone il percorso di ogni file presente nella cartella maps 
+    e verifica il mime type:
+
+    se sono documenti SVG viene aggiunto all'array delle mappe
+    un array associativo (ogni valore contenuto ha un nome)
+    che ha come "name" il valore del nome del file (senza ".svg")
+    e ha come "path" il percorso relativo al webserver ("/static/img/maps/\<file.svg>")
+
+    @since 1.1.0
+     
+    @param string percorso delle mappe
+     
+    @return array mappe (nome e percorso per ogni mappa)
+
+    [Torna su](#sezioni-documentazione)
+
+    [Torna a showmaps.php](#showmapsphp)
+
+    ---
+
+    <a id="visualizzazione-uso-spazio-sistema"></a>
+    Dopo la sezione delle planimetrie e' presente la sezione con il grafico
+    dello spazio occupato e libero del sistema
+
+    ```html
+    <h4 class="text-container">Spazio disco</h4>
+    <div class="container">
+        <canvas id="diskgraph"></canvas>
+    </div>
+    ```
+    Il grafico verra' creato da spaceOnDisk()
+    quando verra' richiamato da mounted()
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+    <a id="visualizzazione-rssi"></a>
+
+    L'ultima sezione della pagina visualizza l'RSSI dei nodi:
+    ```html
+    <h4 class="text-container">Potenza ricevuta dai nodi</h4>
+    <table class="table table-borderless">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Nodo</th>
+                <th scope="col">RSSI [dBm]</th>
+                            
+            </tr>
+        </thead>
+        <tbody id="rssitable">
+            <tr v-for="data in nodes_data">
+                <td><span v-html="rssiimg(data.rssi)"></span></td><td>{{data.id_node}}</td><td>{{data.rssi}}</td>
+            </tr>
+        </tbody>
+    </table>
+    ```
+    Contiene una tabella che ha come tracciato record uno spazio vuoto, "Nodo" e "RSSI [dBm]"
+
+    Il contenuto viene generato grazie alla direttiva v-for che scorre il json nodes_data in data() del componente
+    che crea una riga con 3 colonne:
+    * ```<span v-html="rssiimg(data.rssi)"></span>```: Lo span conterra' l'html restituito da rssiimg(data.rssi)
+            
+            rssiimg(rssi)
+        La funzione restituisce un elemento ```<img>``` che ha come percorso "src"
+        un documento SVG che dipende dal valore passato alla funzione ("rssi")
+        I documenti SVG sono presenti nella cartella "/static/img/rssi"
+        e rappresentano graficamente l'rssi
+
+    * ```<td>{{data.id_node}}</td>```: contiene il nome del node
+    * ```<td>{{data.rssi}}</td>```: contiene il valore dell'rssi del node
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+    <a id="options-mounted-function"></a>
+    
+    Quando viene visualizzata la pagina viene eseguita la funzione mounted()
+    che richiama la funzione ```this.getColors(this.num)```
+    > [Documentazione qui](#options-getcolors)
+
+    > this.num e' una variabile contenuta in data() del componente
+
+    ---
+
+    Poi viene richiamata la funzione ```this.goBack()```
+    per permettere all'utente di tornare alla pagina principale
+
+    goBack()
+    Questa e' tutto il codice della funzione:
+    ```js
+    goBack: function () {
+            /* Imposta touch per tornare indietro */
+            if (boold) {
+                console.log("aggiungo il touch");
+            }
+
+            /* Pulsante per tornare indietro */
+            var backbutton = document.getElementById("backbutton");
+            backbutton.addEventListener("click", function () {
+                window.location.href = "/#/";
+            })
+
+            var hammertime = new Hammer(document.getElementById('app'));
+            hammertime.on('swipe', function (ev) {
+                if (boold) {
+                    console.log("delta X: ", ev.deltaX);
+                }
+
+                if (ev.deltaX > 100) {
+                    // se lo swipe verso sinistra di 100px
+                    window.location.href = "/#/"; // torna pagina precedente/principale
+                }
+            });
+        }
+    ```
+
+    In particolare:
+    ```js
+    var backbutton = document.getElementById("backbutton");
+        backbutton.addEventListener("click", function () {
+            window.location.href = "/#/";
+        })
+    ```
+    la variabile backbutton contiene l'elemento con id "backbutton",
+    cioe' il pulsante che serve per tornare indietro,
+    al quale viene aggiunto un nuovo evento da ascoltare ("addEventListener"): <br>
+    quell'evento da ascoltare e' il click.
+    Quando viene premuto il pulsante viene eseguita la funzione
+    che imposta window.location.href (URL attuale) a "/#/" .
+    Quindi, se la pagina viene richiesta dal raspberry stesso, rimanda a http://localhost/#/, cioe' la home.
+
+    Poi viene usato hammer.js per rilevare lo swipe:
+    ```js
+    var hammertime = new Hammer(document.getElementById('app'));
+            hammertime.on('swipe', function (ev) {
+                if (boold) {
+                    console.log("delta X: ", ev.deltaX);
+                }
+
+                if (ev.deltaX > 100) {
+                    // se lo swipe verso sinistra di 100px
+                    window.location.href = "/#/"; // torna pagina precedente/principale
+                }
+            });
+    ```
+    La prima istruzione definisce un'istanza di hammer.js a
+    cui si passa l'elemento da ascoltare (l'elemento con id="app", quindi il container vue, tutta la pagina)
+
+    mentre l'istruzione successiva dice che quando ("on") avviene uno swipe ("swipe")
+    esegui la funzione che prende come parametro ev, l'evento stesso con le sue proprieta'.
+
+    La proprieta' da osservare e' deltaX, cioe' la quantita' di pixel
+    con cui il dito si e' mosso da sinistra a destra ("X" = asse x) o viceversa.
+
+    Quando la quantita' di pixel e' maggiore di 100 imposta window.location.href (URL attuale) a "/#/".
+
+    ---
+
+    dopo aver chiamato goBack()...
+
+    ```js
+    // inizializzo i calendari
+    var datepickerelems = document.querySelectorAll('.datepicker');
+    var instances = M.Datepicker.init(datepickerelems);
+
+    // inizializzo gli "orologi"
+    var timepickerelems = document.querySelectorAll('.timepicker');
+    var instances = M.Timepicker.init(timepickerelems);
+    ```
+    ...vengono selezionati e inizializzati i datepicker e i timepicker
+
+    ---
+
+    Poi vengono aggiunti gli eventi per riconoscere
+    quando l'utente seleziona/cambia data o ora
+    dalle funzioni:
+
+    ```js
+    this.changeFromdate();
+    this.changeFromtime();
+    this.changeTodate();
+    this.changeTotime();
+    ```
+
+    Queste funzioni prima selezionano gli id degli elementi ```<input>```
+    legati ai timepicker e datepicker, poi gli aggiungono
+    l'evento ("addEventListener") che riconosce il cambiamento
+    del valore nell'input ("change"):
+    quando i valori cambiano vengono modificate le variabili
+    contenute in data() del componente vue.
+    > fromdate: "", fromtime: "", todate: "" e totime: "" conterranno i valori
+
+    ---
+
+    Viene aggiunto l'evento click al pulsante "conferma modifiche"
+    per inviare i timestamp alla backend richiamando la funzione sendTimestamp()
+
+        sendTimestamp()
+    La funzione si occupa di gestire i timestamp minimo e massimo
+    delle rilevazioni da visualizzare nei grafici e di inviarli
+    all backend.
+
+    Prima viene verificato se lo switch e' attivo o no:
+    * se non e' attivo significa che l'utente vuole visualizzare tutti i dati:
+        verra' usato axios.js per mandare a "/static/php/sendopt.php"
+        il valore ```0``` per entrambe i parametri mintime e maxtime
+
+    * se e' attivo bisogna gestire i valori dei timepicker e datapicker:
+        Da data() viene recuperato il valore fromdate e todate
+        che vengono convertiti in timestamp usanto ```Date.parse()```
+        > Il timestamp e' in millisecondi, viene diviso per 1000 per convertirlo in secondi
+
+        Per l'ora e i minuti vengono convertiti usando la funzione timeToTimestamp()
+        definita dallo script t2ts.js
+
+            timeToTimestamp(t_time)
+        Converte tempo (formato "hh:mm tt") in timestamp
+    
+        @since      1.0.0
+        
+        @param {string} t_time, tempo, formato "hh:mm tt" .
+        
+        @return {int} timestamp, timestamp .
+
+        Viene usata nella pagina delle impostazioni ("options.js")
+        per convertire il tempo inserito dall'utente
+        nel timepicker ("orologio") in formato "hh:mm tt" (ore:minuti\<spazio>AM/PM)
+        in timestamp (quindi secondi)
+
+        Vengono definite le variabili fromtimestamp e totimestamp
+        che contengono rispettivamente la somma del timestamp di fromdate e fromtime
+        e la somma del timestamp di todate e totime.
+
+        Se uno dei due valori e' nullo (quindi sono il risultato della somma di
+        almeno un valore nullo) allora viene visualizzato un messaggio di "errore"
+        nell'alert richiamando la funzione showAlert()
+
+        Se il valore di fromtimestamp e' maggiore (o uguale) al valore di totimestamp
+        viene visualizzato un altro messaggio di "errore" richiamando la funzione showAlert()
+        > Questo significa che la data iniziale e' maggiore della data finale
+
+        Se le due condizioni superiori sono false si possono mandare alla backend i valori
+        di fromtimestamp e totimestamp usando axios.js
+
+        Il parametro "mintime" avra' il valore di fromtimestamp e 
+        "maxtime" avra' il valore di totimestamp
+    
+    Il successo dell'operazione verra' visualizzato in un alert creato con showAlert()
+    [Torna su](#sezioni-documentazione)
+
+    ###### sendopt.php
+
+    Questo script recupera dall' URL i parametri GET, e li usa per modificare il record delle impostazioni
+    
+    Il programma accede al DB, controlla che i due parametri siano stati passati:
+    
+    - min_time: timestamp impostato come data di partenza per la visualizzazione dati
+    
+    - max_time: timestamp impostato come data massima per la visualizzazione dati
+    
+    Poi viene fatta una prima misura di prevenzione da dati indesiderati con il typecast:
+    i parametri devono essere numeri interi.
+    
+    Viene effettuata la connessione al DB, viene controllato il successo di questa operazione
+    e poi viene attuata una seconda misura di sicurezza: l'escape dei dati:
+    quei caratteri che possono essere pericolosi in una query vengono preceduti da '\'.
+    
+    Ultima forma di prevenzione attuata sono le prepared statements:
+    la stringa SQL viene preparata sostituendo i '?' con le variabili "bind-ate",
+    le quali devono essere numeri interi.
+    
+    Infine viene eseguita la query e viene chiusa la connessione.
+    > Le prevenzioni sono state svolte per evitare SQL injections
+
+    Per accedere al database viene importato lo script db_connection.php
+
+    Lo script ```db_connection.php```:
+    * disabilita la visualizzazione dei warning (verranno gestiti visualizzandoli per poi terminare lo script)
+    * definisce la funzione ```dbconn($dbname)```:
+
+            dbconn($dbname)
+            
+        Questa funzione si occupa di connettersi al DB, e operare sulla tabella passati come parametri.
+        La funzione recupera dal file 'credentials.ini' username e password per accedere al DB in locale.
+         
+        il parametro verra' usato per accedere al DB.
+            
+        La funzione restituira' l'oggetto connessione con la connessione avvenuta correttamente
+
+        @since 1.0.0
+        @param string $dbname  nome del database
+        @return object $conn oggetto connessione (connessione avvenuta con successo)
+
+        
+    * definisce la funzione ```queryToJson($t_mysqli, $t_query)```:
+
+            queryToJson($t_mysqli, $t_query)
+
+        Questa funzione si occupa di eseguire la query e di resituire i dati in formato json.
+         
+        Esegue la query, ottiene i dati e li inserisce in un array,
+        svuota la memoria occupata dal risultato della query e restituisce l'array in formato json
+
+        @since 1.0.0
+    
+        @param object $t_mysqli oggetto connessione
+        @param string $t_query query da eseguire nel database connesso in $t_mysqli
+         
+        @return string json_encode($data) json del risultato della query
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+    Dopo aver aggiunto l'evento al pulsante "conferma modifiche" per inviare i timestamp
+    alla backend viene usata la funzione setInterval per mantenere aggiornati i dati 
+    relativi all'RSSI
+    ```js
+    var rssiupd = this.makeRssiTable; // salvo la funzione per ottenere RSSI
+    rssiupd();                        // imposto RSSI 
+    setInterval(rssiupd, 10000);      // richiama la funzione per aggiornare RSSI ogni 10 secondi (aspetta 10 secondi -> richiama)
+    ```
+
+        makeRssiTable()
+    Esegue la GET request a "/static/php/getrssi.php" con axios.js per ottenere
+    i dati relativi all'RSSI in formato JSON.
+    > Se non avvengono errori di connessione al database
+
+    Il json ottenuto verra' salvato in "nodes_data" all'interno di data() del componente vue
+
+    [Torna su](#sezioni-documentazione)
+
+    ###### getrssi.php
+
+    Lo script PHP prima include ```/static/php/db_connection.php``` per potersi connettere al database.
+
+    Lo script ```db_connection.php```:
+    * disabilita la visualizzazione dei warning (verranno gestiti visualizzandoli per poi terminare lo script)
+    * viene definita la funzione ```dbconn($dbname)```:
+
+            dbconn($dbname)
+            
+        Questa funzione si occupa di connettersi al DB, e operare sulla tabella passati come parametri.
+        La funzione recupera dal file 'credentials.ini' username e password per accedere al DB in locale.
+         
+        il parametro verra' usato per accedere al DB.
+            
+        La funzione restituira' l'oggetto connessione con la connessione avvenuta correttamente
+
+        @since 1.0.0
+        @param string $dbname  nome del database
+        @return object $conn oggetto connessione (connessione avvenuta con successo)
+
+        
+    * viene definita la funzione ```queryToJson($t_mysqli, $t_query)```:
+
+            queryToJson($t_mysqli, $t_query)
+
+        Questa funzione si occupa di eseguire la query e di resituire i dati in formato json.
+         
+        Esegue la query, ottiene i dati e li inserisce in un array,
+        svuota la memoria occupata dal risultato della query e restituisce l'array in formato json
+
+        @since 1.0.0
+    
+        @param object $t_mysqli oggetto connessione
+        @param string $t_query query da eseguire nel database connesso in $t_mysqli
+         
+        @return string json_encode($data) json del risultato della query
+    
+    Poi imposta il content type a "JSON", si connette al database con dbconn() 
+    e richiama la funzione getRssi()
+
+        getRssi($t_mysqli, $t_dbtable)
+    Questa funzione esegue la query per selezionare l'RSSI dei singoli nodi.
+        
+    La funzione esegue con la funzione queryToJson() la query 
+    per selezionare l'RSSI dei singoli nodi (JSON),
+         
+    @since 1.0.0
+         
+    @param object $t_mysqli oggetto connessione gia' connesso al DB
+    @param string $t_dbtable tabella da dove prendere rilevazioni
+          
+    @return string $json ultime rilevazioni
+        
+    Il JSON viene infine visualizzato/restituito al client http
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+    Dopo aver ottenuto i dati per l'RSSI viene richiama la funzione
+    per visualizzare il grafico dello spazio libero/occupato di sistema
+    ```js
+    this.spaceOnDisk(); // aggiunge grafico con spazio rimanente su disco
+    ```
+    La funzione esegue una GET request con axios.js a "/static/php/diskinfo.php"
+    per ottenere il json con le informazioni relative allo spazio libero/occupato del sistema
+
+    Quando i dati vengono ricevuti occurre separare il valore e l'unita' di misura
+    sia del valore libero sia del valore occupato.
+
+    Per ultimo viene creata un'istanza di Chart() per creare il grafico.
+    All'istanza vengono passati due parametri:
+    * l'elemento canvas che conterra' il grafico
+    * oggetto con impostazioni relative al grafico:
+        * ```type: 'doughnut'``` indica che il tipo di grafico e' "a ciambella"
+        * ```data``` e' l'oggetto che contiene impostazioni relative ai dati da visualizzare
+            * ```labels```: vettore con il testo della legenda in cui viene visualizzato 
+            se lo spazio e' libero o occupato e la relativa unita' di misura
+            * ```datasets```: vettore di oggetti con i dati da visualizzare (ne contiene uno solo)
+                * ```data```: vettore che contiene i dati da visualizzare nel grafico 
+                (viene usato parseFloat() perche' in JSON i dati erano stringhe)
+                * ```backgroundColor```: vettore con i colori di sfondo usato per visualizzare
+                i dati in ```data```
+    
+    [Torna su](#sezioni-documentazione)
+
+    ###### diskinfo.php
+
+    Lo script restituisce in json i dati relativi a spazio libero e occupato del sistema
+
+    Usa php_uname('s') per capire su quale sistema operativo viene eseguito lo script:
+    se viene eseguito su Windows viene recuperate le informazioni relative al disco "C:",
+    altrimenti vengono recuperate le informazioni relative alla root "/"
+    > Vengono usate le funzioni disk_free_space() e disk_total_space() per recuperare
+    > lo spazio libero e totale di sistema, poi viene effettuata la sottrazione
+    > per ottenere lo spazio occupato
+
+    L'unita' di misura dello spazio occupato e libero e' in byte,
+    viene usata la funzione HumanSize() per scegliere l'unita' di misura piu' adatta
+
+        HumanSize($Bytes)
+    Questa funzione si occupa di cambiare unita' di misura ai byte passati come parametro.
+
+    Ogni informazione (spazio libero, occupato e totale)
+    sono stati inseriti in una classe (```\stdClass()```)
+    che viene codificata in JSON con json_encode().
+
+    Infine il JSON ottenuto viene visualizzato
+
+    [Torna su](#sezioni-documentazione)
+
+    ---
+
+    L'ultima funzione richiamata da mounted() e' getmaps()
+    per ottenere il JSON con le planimetrie
+
+    ```js
+    this.getmaps(); // ottiene il json con le mappe
+    ```
+    La funzione esegue la GET request che ottiene
+    dallo script PHP "/static/php/showmaps.php"
+    il json che contiene nome e percorso delle planimetrie
+
+    Il Json ha la struttura di un vettore con 
+    tanti oggetti quante sono le planimetrie:
+
+    Gli oggetti vengono ciclati aggiungendo
+    stringhe vuote al vettore in mezzo ad ogni oggetto.
+
+    Esempio:
+    showmaps.php restituisce:
+    ```json
+    [
+        {"name": "planimetria1", "path": "percorso/della/planimetria1.svg"},
+        {"name": "planimetria2", "path": "percorso/della/planimetria2.svg"},
+        {"name": "planimetria3", "path": "percorso/della/planimetria3.svg"}
+    ]
+    ```
+    la funzione javascript ci aggiunge le stringhe vuote:
+    ```json
+    [
+        {"name": "planimetria1", "path": "percorso/della/planimetria1.svg"},
+        "",
+        {"name": "planimetria2", "path": "percorso/della/planimetria2.svg"},
+        "",
+        {"name": "planimetria3", "path": "percorso/della/planimetria3.svg"}
+    ]
+    ```
+    > Nella frontend "" corrisponde ad una colonna vuota in mezzo a due colonne
+    > con "l'immagine" della planimetria
+
+    Il vettore ottenuto viene impostato come valore di "maps",
+    variabile in data() del componente vue.
+
+    [Torna su](#sezioni-documentazione)
+
+    ###### showmaps.php
+
+    Questo file visualizza in JSON il nome e il percorso delle mappe nel percorso /static/img/maps.
+
+    Per farlo importa lo script "getmaps.php" che contiene la funzione getmaps()
+    che restituisce un array contenente altri array con tutte le informazioni delle planimetrie,
+    poi usa json_encode per codificare l'array in JSON e infine lo visualizza.
+    > [Documentazione di getmaps.php qui](#getmapsphp)
     
     [Torna su](#sezioni-documentazione)
 
