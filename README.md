@@ -100,7 +100,15 @@ First commit
 * Unit Testing scripts
 * Dockerize web server
 * Use Vue components instead of JS files 
-> this implies adding a build stage using something like webpack
+    > this implies adding a build stage using something like webpack
+* Don't have imports from imports 
+(like db_connection.php imported by get_colorslist.php 
+imported by sendcolor.php )
+    > To do this an implementation of a "main" function/condition check is needed.
+    > ```if (!debug_backtrace()) {}``` should do the job
+* Use POST requests instead of GET requests where the frontend sends data to the backend
+* Add a parameter to getdata.php (the php file that shows the sensors readings)
+  that specifies of which sensor to get the data  
 
 ## Author
 Zenaro Stefano [(Github)](https://github.com/mario33881)
