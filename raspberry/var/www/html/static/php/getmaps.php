@@ -1,6 +1,7 @@
 <?php
     /**
-    * Questo file restituisce in array il nome e il percorso delle mappe nel percorso /static/img/maps 
+    * Questo file definisce la funzione getmaps() che restituisce in array altri array 
+    * con il nome e il percorso delle mappe nel percorso /static/img/maps 
     *
     * File usato dai file PHP "sendmap.php" e "showmaps.php"
     * 
@@ -13,18 +14,15 @@
 
     function getmaps($path){
         /**
-         * Questa funzione concatena i parametri in un percorso.
+         * Questa funzione restituisce un array con le planimetrie in "/static/img/maps".
          *
-         * La funzione scorre i parametri passati alla funzione, 
-         * se non sono stringhe nulle le aggiunge in un array, 
-         * gli elementi dell'array verranno uniti con il separatore di sistema,
-         * infine verranno rimossi tutti i separatori di sistema doppi
+         * La funzione compone il percorso di ogni file presente nella cartella maps 
+         * e verifica il mime type:
          *
-         * @since 1.1.0
-         * 
-         * @param string percorso delle mappe
-         * 
-         * @return array mappe (nome e percorso per ogni mappa)
+         * se sono documenti SVG viene aggiunto all'array delle mappe
+         * un array associativo (ogni valore contenuto ha un nome)
+         * che ha come "name" il valore del nome del file (senza ".svg")
+         * e ha come "path" il percorso relativo al webserver ("/static/img/maps/<file.svg>")
         */
 
         // percorso relativo alla root del webserver, con "/"
