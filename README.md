@@ -75,7 +75,7 @@ Features:
 **2019-04-25 01_05:** <br/>
 Fixes:
 * database connection errors are now shown instead of the map and in an alert of the settings page
-> Before this fix you had to use Dev Tools to know the problem and the settings page had weird blank parts
+    > Before this fix you had to use Dev Tools to know the problem and the settings page had weird blank parts
 
 **2019-04-24 01_04:** <br/>
 Features:
@@ -94,21 +94,37 @@ First commit
 
 ## To do / ideas
 * OTA(over the air) updates
+    > Should it be used in production? It leeds to security issues
 * SPIFFS + web server remote configuration
+    > Should it be used in production? It leeds to security issues
 * WIKI with more infos/instructions
 * Add support for other languages
-* Unit Testing scripts
-* Dockerize web server
+* Unit Testing scripts (+CI automation with something like [Travis-ci](https://travis-ci.org/))
+* [Dockerize](https://www.docker.com/) web server
 * Use Vue components instead of JS files 
     > this implies adding a build stage using something like webpack
 * Don't have imports from imports 
 (like db_connection.php imported by get_colorslist.php 
 imported by sendcolor.php )
     > To do this an implementation of a "main" function/condition check is needed.
-    > ```if (!debug_backtrace()) {}``` should do the job
+    > ```if (!debug_backtrace()) {}``` should do the job. 
+    
+    > Also: PHP throws a "Fatal error" if a function has already been declared.
+    To fix this [function_exists()](https://www.php.net/manual/en/function.function-exists.php) is needed
+    
 * Use POST requests instead of GET requests where the frontend sends data to the backend
 * Add a parameter to getdata.php (the php file that shows the sensors readings)
   that specifies of which sensor to get the data  
+* Add a login page and enable connections from outside LAN
+    > Figure out a way to register the user without enabling everyone to do it from the internet: 
+    > during the installation there might be a promt that asks for the password
+    > that gets encrypted and stored inside a new database table.
+    > A default password (that MUST BE CHANGED on the first login) could be used but its not ideal for security reasons
+    
+    > A nice feature would be to add the ability to later change the password 
+    > and create new accounts for trusted people (like family members)
+    
+    > Obviously the rest API (all the PHP scripts that expose data) needs to be protected from un-authorized users as well as the UI
 
 ## Author
 Zenaro Stefano [(Github)](https://github.com/mario33881)
