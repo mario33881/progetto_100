@@ -1,24 +1,31 @@
 <?php
-     /**
-    * Questo file rende disponibili funzioni utili all'elaborazione dei colori
-    *
-    * File usato dai CSS "dinamici" in php ( "/static/settings/cm_style.php" )
-    *
-    * @since 1.0.0
+    /**
+     * Questo file rende disponibili funzioni utili all'elaborazione dei colori
+     * 
+     * File usato dai CSS "dinamici" in php ( "/static/settings/cm_style.php" )
+     * 
+     * @since 01_01
+     * @author Stefano Zenaro (https://github.com/mario33881)
+     * @license MIT
+     * @see "/static/settings/cm_style.php" script PHP che restituisce il CSS dinamico della pagina delle impostazioni
     */
 
     $boold = false;
 
 
     function adjustBrightness($hex, $percent, $darken = true) { 
-        /* 
-        
-            Prende una stringa colore esadecimale $hex, e se:
-            - $darken = true -> rende piu' scuro il colore di $percent %
-            - $darken = false -> rende piu' chiaro il colore di $percent %
-
-            infine restituisce la stringa del nuovo colore in esadecimale
-        
+        /**
+         * Prende una stringa colore esadecimale $hex, e se:
+         *   - $darken = true -> rende piu' scuro il colore di $percent %
+         *   - $darken = false -> rende piu' chiaro il colore di $percent %
+         * 
+         * infine restituisce la stringa del nuovo colore in esadecimale
+         * 
+         * @since 01_01
+         * @param string $hex valore esadecimale di un colore
+         * @param integer $percent valore percentuale per cui chiarire/scurire colore $hex
+         * @param bool $darken se vero scurisce $hex del $percent %, altrimenti lo chiarisce del $percent %
+         * @return string $return valore esadecimale del colore chiarito/scurito
         */     
         
         $brightness = $darken ? -255 : 255; // $brightness = -255 se $darken = true, altrimenti $brightness = 255
@@ -49,9 +56,15 @@
 
 
     function hextorgb(string $t_hex){
-        /*
-            Converte una stringa colore esadecimale
-            in un array colore rgb (r, g, b)
+        /** 
+         * 
+         * Converte una stringa colore esadecimale
+         * in un array colore rgb (r, g, b)
+         * 
+         * @since 01_01
+         * @param string $t_hex valore esadecimale di un colore
+         * @return array array($dec_r, $dec_g, $dec_b) componenti del colore $t_hex con valori decimali
+         * 
         */
 
         $hex_r = substr($t_hex, 1, 2); // prende 2 caratteri dal 1 (r in hex , salta #)
@@ -75,10 +88,15 @@
 
 
     function rgbtohex(string $t_rgb){
-        /*
-            Converte una stringa colore rgb
-            in una stringa colore esadecimale
-        */
+        /**
+         * 
+         * Converte una stringa colore rgb
+         * in una stringa colore esadecimale
+         * 
+         * @since 01_01
+         * @param string $t_rgb colore con componenti r, g e b
+         * @return string "#$hex_r$hex_g$hex_b" colore $t_rgb in esadecimale
+         */
 
         // Prende il contenuto fra parentesi
         $rgbcsv = substr($t_rgb, 4, -1);
@@ -133,7 +151,9 @@
         return "#$hex_r$hex_g$hex_b";
     }
 
+
     if ($boold){
+        // se $boold e' true viene eseguito questo breve test
         $hex = '#4285F4';
 
         $rgbarray = hextorgb($hex);

@@ -1,9 +1,17 @@
 <?php
     /**
-    * Questo file recupera le ultime letture dei singoli nodi da visualizzare sulla mappa nella pagina principale
+    * Questo file recupera le ultime letture dei singoli nodi da visualizzare 
+    * sulla mappa nella pagina principale
     *
-    * @since 1.0.0
+    * Javascript (/static/js/main/home.js) esegue una GET request a questa pagina
+    * per ottenere il JSON con i dati delle ultime rilevazioni di ogni nodo
+    * per poterle visualizzare nella planimetria
+    *
+    * @since 01_01
+    * @author Stefano Zenaro (https://github.com/mario33881)
+    * @license MIT
     * @see dbconn($dbname) in 'db_connection.php'
+    * @see /static/js/main/home.js JS con componente vue della pagina principale
     */
     
     include ('db_connection.php'); // importa funzione dbconn($dbname) e queryToJson($mysqli, $query)
@@ -23,7 +31,7 @@
          * La funzione esegue con la funzione queryToJson() la query 
          * per selezionare le ultime rilevazioni dei singoli nodi (JSON),
          *
-         * @since 1.0.0
+         * @since 01_01
          * 
          * @param object $t_mysqli oggetto connessione gia' connesso al DB
          * @param string $t_dbtable tabella da dove prendere rilevazioni
@@ -51,7 +59,6 @@
 
     $mysqli = dbconn($dbname); // esegue la connessione al DB
     $json = getLatestData($mysqli, $db_senstable);
-
 
     // CHIUDI CONNESSIONE
     $mysqli->close();

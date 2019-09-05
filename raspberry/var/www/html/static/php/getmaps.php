@@ -5,7 +5,13 @@
     *
     * File usato dai file PHP "sendmap.php" e "showmaps.php"
     * 
-    * @since 1.1.0
+    * @since 01_04 (https://github.com/mario33881/progetto_100/commit/a473a44d6d67dc67d161879192d19a8703861b3c)
+    * @author Stefano Zenaro (https://github.com/mario33881)
+    * @license MIT
+    * @see /static/php/sendmap.php script PHP che riceve dalla frontend la planimetria selezionata dall'utente
+    * @see /static/php/showmaps.php script PHP che restituisce il json delle planimetrie selezionabili dall'utente
+    * @todo Rinominare questo script: inizia con "get" che in base allo "standard" del progetto indicherebbe
+    *       che lo script restituisce al client informazioni, invece viene usato da altri script PHP
     */
 
     // percorso cartella delle mappe
@@ -23,6 +29,10 @@
          * un array associativo (ogni valore contenuto ha un nome)
          * che ha come "name" il valore del nome del file (senza ".svg")
          * e ha come "path" il percorso relativo al webserver ("/static/img/maps/<file.svg>")
+         * 
+         * @since 01_04 (https://github.com/mario33881/progetto_100/commit/a473a44d6d67dc67d161879192d19a8703861b3c)
+         * @param string $path percorso di sistema cartella con le planimetrie
+         * @return array $maps array di array con nomi e percorsi (rispetto al webserver) delle planimetrie 
         */
 
         // percorso relativo alla root del webserver, con "/"

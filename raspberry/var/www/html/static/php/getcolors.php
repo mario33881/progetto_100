@@ -1,8 +1,14 @@
 <?php
     /**
-    * Questo file ottiene la lista dei colori per la frontend, pagina impostazioni 
+    * Questo file ottiene e visualizza/restituisce al client la lista dei colori per la frontend, pagina impostazioni 
     *
-    * @since 1.0.0
+    * Javascript della frontend richiede tramite GET request il JSON con tutti i colori
+    * e li rende selezionabili dall'utente
+    *
+    * @since 01_01
+    * @author Stefano Zenaro (https://github.com/mario33881)
+    * @license MIT
+    * @see /static/js/main/options.js JS con componente Vue della pagina delle impostazioni
     */
 
     include ('db_connection.php'); // importa funzione dbconn($dbname) e queryToJson($mysqli, $query)
@@ -19,7 +25,7 @@
         /**
          * Questa funzione esegue la query per selezionare i colori da visualizzare nella pagina impostazioni.
          *
-         * @since 1.0.0
+         * @since 01_01
          * 
          * @param object $t_mysqli oggetto connessione gia' connesso al DB
          * @param string $t_dbtable tabella da dove prendere colori

@@ -1,3 +1,7 @@
+/*
+    CSS statici
+*/
+
 #app{
     /* Nascondo le pagine che stanno entrando */
     overflow: hidden; 
@@ -10,16 +14,17 @@
     width: 100vw;       /* La lunghezza della pagina deve essere sempre SOLO tutta pagina */
 }
 
-/* MAPPA */
+/* PLANIMETRIA */
 .floorplan{
-    height: 80vh; /* Altezza del div con mappa -> "centra" la mappa */
+    height: 80vh; /* Altezza del div con planimetria -> "centra" la planimetria */
 }
+
 .floorplan > svg{
-    /* Mappa della casa */
-    width: 100%; 
-    height: 80%;
-    display: block; 
-    margin: auto; 
+    /* Planimetria della casa */
+    width: 100%;    /* 100% della lunghezza del parent */
+    height: 80%;    /* 80% altezza del parent */
+    display: block; /* Occupa tutto lo spazio specificato (100% x 80%) */
+    margin: auto;   /* Aggiungi margini automaticamente per centrare la planimetria */
 }
 
 /* TITOLI */
@@ -27,6 +32,7 @@
     height: 10vh;
     margin-bottom: 0;
 }
+
 .text-container{
     display: flex;           /* Per centrare testo*/
     justify-content: center; /* Per centrare testo*/
@@ -44,7 +50,7 @@
 }
 
 @media only screen and (max-width: 365px){
-    /* media per schermi mobile small */
+    /* media per schermi mobile con lunghezza massima di 365 pixel */
     .title{
         /* Titolo troppo grande su mobile (va su due righe...) 
             Todo: Mobile first...
@@ -52,33 +58,35 @@
         font-size: 2.0rem;
     }
 }
+
 @media only screen and (max-height: 450px){
-    /* media per schermi mobile small */
+    /* media per schermi mobile con lunghezza massima di 450 pixel */
     .floorplan > svg{
-        /* Mappa della casa */
+        /* Planimetria della casa */
         width: 90%; height: 100%;
     }
 }
 
 @media only screen and (max-height: 380px){
-    /* media per schermi mobile small */
+    /* media per schermi mobile con lunghezza massima di 380 pixel */
     .floorplan > svg{
-        /* Mappa della casa */
+        /* Planimetria della casa */
         width: 79%; height: 100%;
     }
 }
+
 @media only screen and (max-height: 325px){
-    /* media per schermi mobile small */
+    /* media per schermi mobile con lunghezza massima di 325 pixel */
     .floorplan > svg{
-        /* Mappa della casa */
+        /* Planimetria della casa */
         width: 65%; height: 100%;
     }
 }
 
 @media only screen and (max-height: 450px) and (min-width: 800px){
-    /* media per schermi mobile small */
+    /* media per schermi mobile con lunghezza tra 450  e 800 pixel */
     .floorplan > svg{
-        /* Mappa della casa */
+        /* Planimetria della casa */
         width: 60%; height: 100%;
     }
 }
@@ -90,17 +98,19 @@
 .slide-fade-enter-active {
     transition: all .4s ease; /* .4 secondi per entrare */
 }
+
 .slide-fade-leave-active {
     transition: all .4s;      /* .4 secondi per uscire */
 }
 
 .slide-fade-enter{
-    transform: translateX(100%); /* Transizione */
-    opacity: 0;
+    transform: translateX(100%); /* trasla per l'asse X l'elemento del 100%     */
+    opacity: 0;                  /* imposta l'opacita' a 0, quindi non visibile */
 }
+
 .slide-fade-leave-to{
-    transform: translateX(100%); /* Transizione */
-    opacity: 0;
+    transform: translateX(100%); /* trasla per l'asse X l'elemento del 100%     */
+    opacity: 0;                  /* imposta l'opacita' a 0, quindi non visibile */
 }
 
 /*#######################################################################################################*/
@@ -163,6 +173,6 @@
 }
 
 .center {
-    text-align: center; /* testo centrato */
-    margin-right: 55px; /* margine da destra (e da sinistra) del pulsante */   
+    text-align: center;  /* testo centrato */
+    margin-right: 55px;  /* margine da destra (e da sinistra) del pulsante */   
 } 

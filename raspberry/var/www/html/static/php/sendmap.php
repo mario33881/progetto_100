@@ -23,7 +23,16 @@
     * Infine viene eseguita la query per impostare la mappa nelle impostazioni e viene chiusa la connessione.
     * > Le prevenzioni sono state svolte per evitare SQL injections
     *
-    * @since 1.0.0
+    * Javascript (/static/js/main/options.js) esegue una GET request a questa pagina
+    * con il nome della planimetria che e' stata selezionata dall'utente dalla pagina delle impostazioni
+    *
+    * @since 01_01
+    * @author Stefano Zenaro (https://github.com/mario33881)
+    * @license MIT
+    * @see /static/php/db_connection.php definisce le funzioni che permettono la connessione e l'esecuzione di istruzioni SQL sul db
+    * @see /static/php/getmaps.php contiene funzione che restituisce le planimetrie presenti nella cartella /static/img/maps
+    * @see /static/js/main/options.js script javascript con componente vue della pagina delle impostazioni
+    * @todo Modificare metodo request da GET a POST sia in questo script sia in options.js
     */
     
     include ('db_connection.php'); // importa funzione dbconn($dbname) e queryToJson($mysqli, $query)

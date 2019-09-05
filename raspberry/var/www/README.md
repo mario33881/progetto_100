@@ -857,22 +857,18 @@ La pagina comincia a richiedere tutti i file css:
     
     ---
 
-    Dopo aver salvato il valore esadecimale del colore contenuto in $color nella variabile $cm_bgcolor3
-    viene restituito il CSS che usa il colore esadecimale:
+    Infine viene restituito il CSS che usa il colore esadecimale:
 
     ```css
     /* sfondi colorati */
     .bg-color-infos{
-        background-color: <?php echo $cm_bgcolor3; ?>;
+        background-color: <?php echo $color; ?>;
         color: <?php echo $textcolor; ?>;
     }
     ```
     La classe definisce il colore di sfondo (```background-color```) uguale al colore selezionato
     dall'utente (colore espresso in valore esadecimale) e il colore del testo (```color```)
     del valore della variabile $textcolor ("white", bianco)
-
-    > Nota: il cambio nome di variabile e' stato fatto per integrare vecchio codice a quello nuovo
-    > (codice appartenente al "prototipo" del progetto 100+100)
 
     [Torna su](#sezioni-documentazione)
 

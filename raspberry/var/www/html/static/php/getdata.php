@@ -1,6 +1,6 @@
 <?php
     /**
-    * Questo file utilizza tre funzioni: dbconn($dbname), getOptions($t_dbname, $t_dbtable) e getData($min_timestamp, $max_timestamp)
+    * Questo script utilizza tre funzioni: dbconn($dbname), getOptions($t_dbname, $t_dbtable) e getData($min_timestamp, $max_timestamp)
     * per recuperare le impostazioni utente e usarle per estrarre dal DB i dati necessari
     *
     * La prima funzione viene usata dalla terza funzione per accedere al database
@@ -11,8 +11,14 @@
     * - se $min_timestamp == 0 e $max_timestamp == 0: prendi tutti i dati
     * - altrimenti visualizza dati che hanno timestamp compreso fra i due parametri
     *
-    * @since 1.0.0
+    * Javascript (/static/js/main/graph.js) esegue una GET request a questa pagina
+    * per ottenere il JSON da utilizzare nei grafici delle umidita' e delle temperature
+    *
+    * @since 01_01
+    * @author Stefano Zenaro (https://github.com/mario33881)
+    * @license MIT
     * @see dbconn($dbname) in 'db_connection.php'
+    * @todo aggiungere parametro per richiedere rilevazioni di un specifico nodo
     */
 
     include ('db_connection.php'); // importa funzione dbconn($dbname) e queryToJson($mysqli, $query)
@@ -40,9 +46,9 @@
          *
          * Infine viene restituito il json.
          *
-         * @since 1.0.0
+         * @since 01_01
          *
-         * @return json Opzioni utente da DB
+         * @return string json Opzioni utente da DB
         */
 
         // QUERY PER OTTENERE I DATI DALLA TABELLA

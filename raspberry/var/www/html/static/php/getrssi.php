@@ -2,7 +2,13 @@
     /**
     * Questo file ottiene gli RSSI da visualizzare nelle impostazioni nella frontend
     *
-    * @since 1.0.0
+    * Javascript (/stativ/js/main/options.js) esegue una GET request a questa pagina
+    * per ottenere l'ultimo RSSI per ogni nodo, poi lo visualizza in una tabella
+    * nella pagina delle impostazioni
+    *
+    * @since 01_01
+    * @author Stefano Zenaro (https://github.com/mario33881)
+    * @license MIT
     * @see dbconn($dbname) in 'db_connection.php'
     */
     
@@ -23,7 +29,7 @@
          * La funzione esegue con la funzione queryToJson() la query 
          * per selezionare l'RSSI dei singoli nodi (JSON),
          *
-         * @since 1.0.0
+         * @since 01_01
          * 
          * @param object $t_mysqli oggetto connessione gia' connesso al DB
          * @param string $t_dbtable tabella da dove prendere rilevazioni

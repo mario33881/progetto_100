@@ -28,17 +28,24 @@
     * Infine viene eseguita la query e viene chiusa la connessione.
     * > Le prevenzioni sono state svolte per evitare SQL injections
     *
-    * @since 1.0.0
+    * I node MCU eseguono le GET request per mandare i dati a questa pagina
+    *
+    * @since 01_01
+    * @author Stefano Zenaro (https://github.com/mario33881)
+    * @license MIT
+    * @see /static/php/db_connection.php definisce le funzioni che permettono la connessione e l'esecuzione di istruzioni SQL sul db
+    * @todo Cambiare $_GET in $_POST in questo script e usare metodo POST anche nello sketch del node MCU
+    * @todo "Standardizzare" il nome dello script al resto del progetto chiamandolo postxxxx.php, post_xxxx.php, sendxxxx.php o send_xxxx.php
     */
     
     include ('db_connection.php'); // importa funzione dbconn($dbname) e queryToJson($mysqli, $query)
     
     // COSTANTI DATABASE
-    $dbname = "db100_100";                // nome database
-    $dbtable = "t_sensors";               // nome tabella nel database
+    $dbname = "db100_100";   // nome database
+    $dbtable = "t_sensors";  // nome tabella nel database
 
     // TIMESTAMP
-      date_default_timezone_set('Europe/Rome');
+    date_default_timezone_set('Europe/Rome');
     $timestamp = date_create();
     $timestamp = date_timestamp_get($timestamp);
 
@@ -52,7 +59,7 @@
         $heatIndexCelsius = (float) $_GET['heatIndexCelsius'];
         $rssi = (int) $_GET['rssi'];
 
-        // EVITO XSS (caratteri pericolosi diventano)
+        // EVITO XSS (caratteri pericolosi diventano inoffensivi)
         $node = htmlspecialchars($node);
         $humidity = htmlspecialchars($humidity);
         $celsiusTemp = htmlspecialchars($celsiusTemp);
@@ -88,8 +95,8 @@
             echo "E' stato creato un nuovo record!";
         }
         else {
-           // qualcosa e' andato storto
-             echo "Errore: " . $stmt . "<br>" . $stmt->error;
+            // qualcosa e' andato storto
+            echo "Errore: " . $stmt . "<br>" . $stmt->error;
         }
 
         // TERMINA CONNESSIONE

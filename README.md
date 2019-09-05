@@ -1,14 +1,24 @@
-# progetto_100
+# Progetto 100+100
 Humidity and Temperature monitoring system using an IoT network (school project).
 
 Node MCUs reading humidity and temperature using DHT22 are connected to a Raspberry Pi Wirelessly to which they send the data to
 
-![](https://github.com/mario33881/progetto_100/raw/master/images/wallpaper.png?raw=true)
-![](https://i.imgur.com/xPlIjIH.png)
+<p align="center">
+    <img src="https://github.com/mario33881/progetto_100/raw/master/images/wallpaper.png?raw=true">
+    <img src="https://i.imgur.com/xPlIjIH.png">
+</p>
 
 You can read more about this project [from the wiki here](https://github.com/mario33881/progetto_100/wiki) <br />
 Puoi leggere piu' informazioni riguardo il progetto [nella wiki qui](https://github.com/mario33881/progetto_100/wiki)
 ---
+
+## Sections
+* [Getting started](#getting-started-(brief-instructions))
+    * [Node MCU](#node-mcu)
+    * [Raspberry pi](#raspberry-pi)
+* [Software map](#software-map)
+* [Changelog](#changelog)
+* [To do / ideas](#to-do-/-ideas)
 
 ## Getting started (brief instructions)
 
@@ -17,9 +27,9 @@ Puoi leggere piu' informazioni riguardo il progetto [nella wiki qui](https://git
 1. Download Arduino IDE (> 1.8.7 ) [Here](https://www.arduino.cc/en/Main/Software)
 2. Install USB drivers, download [Here](https://www.silabs.com/products/mcu/Pages/USBtoUARTBridgeVCPDrivers.aspx)
 3. Add this to the “Additional Boards Manager URLs” in the Arduino IDE
-```
-http://arduino.esp8266.com/stable/package_esp8266com_index.json
-```
+    ```
+    http://arduino.esp8266.com/stable/package_esp8266com_index.json
+    ```
 4. Restart the Arduino IDE
 5. Go to ```Tools -> Board -> Boards Manager``` and install the ```esp8266``` package by ESP8266 Community
 6. Restart the Arduino IDE
@@ -43,38 +53,39 @@ http://arduino.esp8266.com/stable/package_esp8266com_index.json
 2. Download this repository
 3. Go to the ```raspberry/auto``` folder and open the terminal
 4. Set the sh files as executable with this command:
-```
-find . -type f -iname "*.sh" -exec chmod +x {} \;
-```
+    ```
+    find . -type f -iname "*.sh" -exec chmod +x {} \;
+    ```
 5. Change these variables to your liking in the ```autoinstall.sh``` file
-```
-mysqlpass : password for mysql (user is root)
-touchdevice : device with touch input
-hostapd_ip : static ip of raspberry pi
-hostapd_ssid : name of the Access Point
-hostapd_password : password to connect to the AP
-```
+    ```
+    mysqlpass : password for mysql (user is root)
+    touchdevice : device with touch input
+    hostapd_ip : static ip of raspberry pi
+    hostapd_ssid : name of the Access Point
+    hostapd_password : password to connect to the AP
+    ```
 6. Execute the file by entering this command:
-```
-./autoinstall.sh
-```
+    ```
+    ./autoinstall.sh
+    ```
 
 ## Software map
+> The software map idea was abandoned because its hard to maintain it updated
 
 ### Backend
 Work in progress
 ### Frontend
-![](https://github.com/mario33881/progetto_100/blob/master/images/frontend.png)
+![](https://github.com/mario33881/progetto_100/raw/master/images/frontend.png?raw=true)
 
 ## Changelog
 
 **2019-04-25 01_06:** <br/>
 Features:
-* Now you can add "x + room" classes to elements in the plan to make then clickable
+* Now you can add "x + room" classes to elements in the plan to make them clickable
 
 **2019-04-25 01_05:** <br/>
 Fixes:
-* database connection errors are now shown instead of the map and in an alert of the settings page
+* database connection errors are now shown instead of the map, they are also shown in an alert of the settings page
     > Before this fix you had to use Dev Tools to know the problem and the settings page had weird blank parts
 
 **2019-04-24 01_04:** <br/>
@@ -125,6 +136,15 @@ imported by sendcolor.php )
     > and create new accounts for trusted people (like family members)
     
     > Obviously the rest API (all the PHP scripts that expose data) needs to be protected from un-authorized users as well as the UI
+* Put all the database settings (database name and its table's names) inside a config file
+or in a script that gets included
+    > Better maintainability: changing one name doesn't require changing every variable inside the PHP scripts
+* Better naming "standardization" for PHP scripts: "get_xxxx.php" or "getxxxx.php" could be used for GET request responders,
+"sendxxxx.php"/"send_xxxx.php"/"postxxxx.php"/"post_xxxx.php" could be used for POST request responders,
+the utilities (like "db_connection.php" ) could be put inside an "utils" folder
+* Changing the UI color doesn't effect the UI on other devices, while this could be a cool feature
+the user expects that changing the UI color affects all the devices without having to reload their page
+    > websocket could be used to listen for the color change and reload the page
 
 ## Author
 Zenaro Stefano [(Github)](https://github.com/mario33881)

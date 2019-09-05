@@ -1,10 +1,16 @@
 <?php 
     /**
-    * Questo file ottiene dalla tabella dei colori il colore esadecimale selezionato dall'utente (tabella opzioni) 
+    * Questo file ottiene dalla tabella dei colori il valore esadecimale del colore selezionato dall'utente (tabella opzioni) 
     *
     * File usato dai CSS "dinamici" in php ( "/static/infos/cm_style.php" e "/static/settings/cm_style.php" )
     * 
-    * @since 1.0.0
+    * @since 01_01
+    * @author Stefano Zenaro (https://github.com/mario33881)
+    * @license MIT
+    * @see /static/css/infos/cm_style.php script PHP che restituisce il CSS dinamico della pagina delle informazioni
+    * @see /static/css/settings/cm_style.php script PHP che restituisce il CSS dinamico della pagina delle impostazioni
+    * @todo Per migliorare la leggibilita' e manutenibilità del codice sarebbe opportuno 
+    *       richiamare get_colors nei due script dei CSS dinamici
     */
         
     include ('db_connection.php'); // importa funzione dbconn($dbname) e queryToJson($mysqli, $query)
@@ -23,7 +29,7 @@
          * per selezionare il colore (esadecimale) e ottiene il JSON,
          * converte il JSON ottenuto in array che verra' restituito
          *
-         * @since 1.0.0
+         * @since 01_01
          * 
          * @param object $t_mysqli oggetto connessione gia' connesso al DB
          * @param string $t_opttable tabella da dove prendere colore selezionato
@@ -47,6 +53,7 @@
         // RESTITUISCI I DATI ARRAY
         return $t_array_colors;
     }
+
 
     $mysqli = dbconn($dbname); // esegue la connessione al DB
 

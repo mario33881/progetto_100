@@ -1,10 +1,18 @@
 <?php 
     /**
-    * Questo file ottiene la mappa selezionata dall'utente (tabella opzioni) 
+    * Questo script restituisce/visualizza la planimetria selezionata dall'utente (tabella opzioni) 
     *
-    * File usato dal JS "/static/js/main/home.js"
+    * Script usato dal JS "/static/js/main/home.js":
+    * javascript esegue una GET request a questa pagina per ottenere l'SVG
+    * con la planimetria e la inserisce nel DOM
     * 
-    * @since 1.0.0
+    * > Dalla versione 01_04 lo script puo' restituire una qualsiasi planimetria (SVG) presente in /static/img/maps,
+    * > prima restituiva o la planimetria "colorful.svg" o la planimetria "realistic.svg"
+    *
+    * @since 01_01
+    * @author Stefano Zenaro (https://github.com/mario33881)
+    * @license MIT
+    * @see "/static/js/main/home.js", JS contenente componente Vue con pagina principale frontend
     */
 
     include ($_SERVER["DOCUMENT_ROOT"] . '/static/php/db_connection.php'); // importa funzione dbconn($dbname) e queryToJson($mysqli, $query)
@@ -24,7 +32,7 @@
          * per selezionare la mappa e ottiene il JSON,
          * converte il JSON ottenuto in array che verra' restituito
          *
-         * @since 1.0.0
+         * @since 01_01
          * 
          * @param object $t_mysqli oggetto connessione gia' connesso al DB
          * @param string $t_dbtable tabella impostazioni
@@ -51,9 +59,9 @@
          * La funzione scorre i parametri passati alla funzione, 
          * se non sono stringhe nulle le aggiunge in un array, 
          * gli elementi dell'array verranno uniti con il separatore di sistema,
-         * infine verranno rimossi tutti i separatori di sistema doppi
+         * infine verranno rimossi tutti i separatori di sistema extra
          *
-         * @since 1.1.0
+         * @since 01_04 (https://github.com/mario33881/progetto_100/commit/a473a44d6d67dc67d161879192d19a8703861b3c)
          * 
          * @param string sono accettati piu' parametri stringhe
          * 
@@ -79,23 +87,28 @@
     
     $map_array = get_map($mysqli, $db_table);
 
-    $map = $map_array[0]["map"]; // mappa selezionata dall'utente
+    $map = $map_array[0]["map"]; // nome mappa/file selezionata dall'utente
     
-    $mappath = join_paths(__DIR__, "maps", $map . ".svg"); // percorso mappa
+    $mappath = join_paths(__DIR__, "maps", $map . ".svg"); // percorso "teorico" mappa
+
     if(file_exists($mappath)){
-        // se la mappa si trova nella cartella maps, controlla se svg
+        // se la mappa si trova nella cartella maps, controlla se il mime type e' SVG
 
         if (mime_content_type($mappath) === "image/svg+xml"){
+            // visualizza/restituisci al client il contenuto del documento
             echo readfile($mappath);
         }
         else{
+            // restituisci un tag SVG con il testo che indica all'utente che ha selezionato un documento non SVG
+            // > Nota: non dovrebbe succedere, l'utente NON PUO' selezionare dalla frontend una planimetria con mimetype diverso da SVG
+            // > (nella frontend le planimetrie non SVG non vengono neppure visualizzate)
             echo '<svg height="100%" width="100%"><text x="0" y="50%" fill="red"> Il file della planimetria "' . htmlspecialchars($map) . '" non ha mime type = SVG</text></svg>';
             echo "Il file non ha mime type = SVG";
         }
         
     }
     else{
-        // qualcosa e' andato storto (DB manomesso/incompleto)
+        // la mappa selezionata dall'utente non e' stata trovata (DB manomesso/incompleto: l'utente NON PUO' impostare dalla frontend una mappa non esistente)
         echo '<svg height="100%" width="100%"><text x="0" y="50%" fill="red"> planimetria "' . htmlspecialchars($map) . '" non trovata</text></svg>';
         echo "planimetria '" . htmlspecialchars($map) . "' non trovata";
     }
