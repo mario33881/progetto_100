@@ -1,11 +1,20 @@
+/** 
+ * Script che definisce componente Vue con la pagina dei grafici
+ * 
+ * @since 01_01
+ * @author Stefano Zenaro (https://github.com/mario33881)
+ * @license MIT
+ * @todo Aggiungere un riscontro anche in caso la GET request per le rilevazioni non abbia successo
+*/
 
-// componente / "pagina" grafici
 const Graph = {
     name: "graph", // nome componente
-    template:`<div>
+    template:`
+    <div>
+        <!-- Titolo grafico temperatura + Pulsante per tornare indietro -->
         <div class="row mb-0">
-                <div class="col-sm-12 col-sm-offset-2 ">
-                <div class="panel panel-primary ">
+            <div class="col-sm-12 col-sm-offset-2">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
                         <div class="center-text-vert">
                             <button type="button" id="backbutton" class="btn btn-sm align-left mb-0 bg-color"> < </button>
@@ -13,58 +22,110 @@ const Graph = {
                         </div>
                     </div>
                 </div>
-                </div>
             </div>
-  
-                        <div class="graph-container">
-                            <canvas id="tempgraph"></canvas>
-                        </div>
-                        
-                        <h2 class="text-container title"> Umidita' {{stanza}}</h2>
-                        <div class="graph-container">
-                            <canvas id="humgraph"></canvas>
-                        </div>
+        </div>
 
-                        <span class="bg-color" style="display:none"> </span> 
-                    </div>`,
+        <!-- Container grafico temperature -->
+        <div class="graph-container">
+            <canvas id="tempgraph"></canvas>
+        </div>
+        
+        <!-- Titolo grafico umidita' -->
+        <h2 class="text-container title"> Umidita' {{stanza}}</h2>
+        
+        <!-- Container grafico umidita' -->
+        <div class="graph-container">
+            <canvas id="humgraph"></canvas>
+        </div>
+
+        <!-- Elemento nascosto per colore grafici -->
+        <span class="bg-color" style="display:none"> </span> 
+    </div>`,
     props: ["stanza"], // proprieta' che riconosce stanza cliccata ATTUALMENTE NON USATA
     methods: {
         TimestampToDate: function (timestamp) {
-
-            /* Questa funzione converte il timestamp passato come parametro in data "umana" americana */
+            /** 
+            * Questa funzione converte il timestamp passato come parametro in data "umana" americana
+            *
+            * @param {integer} timestamp Timestamp con unita' di misura in secondi
+            * @return {string} dformat Data in formato "MM/DD/YYYY hh:mm"
+            * @since 01_01
+            */
+            
 
             Number.prototype.padLeft = function (base, chr) {
-                // aggiunge gli zeri a sinistra (es. 6 minuti -> 06)
+                /** 
+                 * aggiunge tanti chr (o "0") a sinistra quanti indica "l'esponente" di base (default "10" -> xx)
+                 * (es. 6 minuti -> 06)
+                 * 
+                 * @param {integer} base numero 10^(x + 1) che indica quanti chr mettere davanti al numero
+                 * @param {string} chr carattere da aggiungere a sinistra del numero
+                 * @return {string} padded_string Stringa contenente numero avente a sinistra x + 1 "chr" (base = 10^(x+1)) 
+                 *   
+                 * @example 
+                 * // restituisce "01"
+                 * (1).padLeft()
+                 * @example
+                 * //restituisce "002"
+                 * (2).padLeft(100)
+                 * @example
+                 * //restituisce "xx3"
+                 * (3).padLeft(100, "x")
+                 * @since 01_01
+                */
+                
                 var len = (String(base || 10).length - String(this).length) + 1;
-                return len > 0 ? new Array(len).join(chr || '0') + this : this;
+                var padded_string = len > 0 ? new Array(len).join(chr || '0') + this : this;
+                return padded_string;
             }
 
-            var d = new Date(timestamp * 1000),       // conversione timestamp a data ( timestamp [s] -> [ms] )
-                dformat = [(d.getMonth() + 1).padLeft(), // getMonth()    ottiene mese   (due digit)
-                d.getDate().padLeft(),                    // getDate()     ottiene giorno (due digit)
-                d.getFullYear()].join('/') +              // getFullYear() ottiene anno e questi vengono uniti da '/' -> 02/18/2019
-                    ' ' +                                     // aggiungi spazio tra data e ore
-                    [d.getHours().padLeft(),                 // getHours()    ottiene ore
-                    d.getMinutes().padLeft()].join(':');      // getMinutes()  ottiene minuti e questi vengono uniti da ':' -> 17:41 
 
-            return dformat; // risultato finale "02/18/2019 17:41"
+            var d = new Date(timestamp * 1000)  // conversione timestamp a data ( timestamp [s] -> [ms] )
+                
+            var dformat = [(d.getMonth() + 1).padLeft(),  // getMonth()    ottiene mese   ( .padLeft() due digit, mm)
+                d.getDate().padLeft(),                    // getDate()     ottiene giorno ( .padLeft() due digit, dd)
+                d.getFullYear()].join('/') +              // getFullYear() ottiene anno e questi vengono uniti da '/' -> mm/dd/yyyy
+                    ' ' +                                 // aggiungi spazio tra data e ore
+                    [d.getHours().padLeft(),              // getHours()    ottiene ore ( .padLeft() due digit, hh)
+                    d.getMinutes().padLeft()].join(':');  // getMinutes()  ottiene minuti e questi vengono uniti da ':' -> hh:mm 
+
+            return dformat; // risultato finale "MM/DD/YYYY hh:mm"
         },
         goBack: function () {
-            /* Questa funzione aggiunge la funzionalita' touch alla pagina (swipe verso sinistra) */
+            /**
+             * Questa funzione aggiunge gli eventi per tornare alla pagina principale: 
+             * - clic del pulsante #backbutton 
+             * - touch alla pagina (swipe verso sinistra)
+             * 
+             * Viene richiamata da mounted()
+             * 
+             * @since 01_01
+            */
 
             if (boold) {
                 console.log("aggiungo il touch");
             }
 
-            /* Pulsante per tornare indietro */
-            var backbutton = document.getElementById("backbutton");
-            backbutton.addEventListener("click", function () {
-                window.location.href = "/#/";
-            })
+            // Evento pulsante per tornare indietro
+            var backbutton = document.getElementById("backbutton");  // seleziona pulsante
 
-            var hammertime = new Hammer(document.getElementById('app')); // elemento touch #app -> tutta la pagina
+            backbutton.addEventListener("click", function () {       // aggiungi evento "click"
+                /* Torna alla pagina principale */
+                window.location.href = "/#/";                        // che torna alla home
+            })
+            
+            // evento swipe per tornare indietro
+            var hammertime = new Hammer(document.getElementById('app'));  // oggetto Hammer su elemento #app -> tutta la pagina
+            
             hammertime.on('swipe', function (ev) {
-                // quando viene fatto uno swipe...
+                /**
+                 * Viene aggiunto l'evento "swipe"
+                 * all'elemento legato all'oggetto Hammer (#app)
+                 * 
+                 * @param {object} ev oggetto con proprieta' relative all'evento
+                 * @since 01_01
+                */
+                
                 if (boold) {
                     console.log("Delta X: ", ev.deltaX);
                 }
@@ -76,7 +137,14 @@ const Graph = {
             });
         },
         getGraphColor: function () {
-            /* Ottiene il colore dell'elemento nascondo per utilizzarlo per i grafici */
+            /** 
+             * Ottiene i 3 componenti (r, g e b) del colore del primo elemento con classe .bg-color per utilizzarlo per i grafici.
+             * 
+             * Viene richiamata da makeGraphs() che usa i 3 componenti per colorare i grafici
+             * 
+             * @return {Array.<string, string, string>} rgb Array con i colori di sfondo dell'elemento con classe .bg-color
+             * @since 01_01
+            */
 
             const element = document.querySelector('.bg-color');     // seleziona elemento nascosto
             const style = getComputedStyle(element);                 // ottieni stili dell'elemento
@@ -92,7 +160,40 @@ const Graph = {
             return rgb;
         },
         makeGraphs: function () {
-            /* Questa funzione fa GET request a php per ottenere i dati da visualizzare */
+            /** 
+             * Questa funzione fa GET request a php per ottenere i dati da visualizzare nei grafici.
+             * 
+             * Prima recupera da getGraphColor() i componenti rgb da usare per i grafici,
+             * poi si assicura che la funzione stia lavorando quando l'utente e' sulla pagina dei grafici:
+             * se non e' così viene terminato il "loop infinito" di setInterval() eseguito da mounted()
+             * 
+             * se invece l'utente e' nella pagina dei grafici viene recuperato dall'URL il nome della stanza,
+             * > Nota: si potrebbe usare la prop "stanza", non e' stata piu' usata perche' sembrava creare problemi.
+             * > Il problema dopo essersi ripresentato e' scomparso quando e' 
+             * > stato aggiunto il controllo della pagina attuale per fermare il setInterval()
+             * 
+             * viene usato Axios,js per eseguire una GET request a "/static/php/getdata.php" per ottenere
+             * le rilevazioni, poi viene eseguito un loop che cicla le rilevazioni una ad una
+             * per assicurarsi che l'id del nodo sia quello della stanza di cui visualizzare i grafici
+             * e per dividere timestamp, umidita' e temperatura in 3 array separati
+             * > Nota: i timestamp vengono prima convertiti in data da TimestampToDate()
+             * 
+             * vengono creati 2 oggetti, uno per l'umidita' e uno per la temperatura,
+             * che servono per indicare a chart.js (incluso in mdbootstrap)
+             * quali dati usare per l'asse delle X (timestamp),
+             * quali per l'asse Y (umidita'/temperature)
+             * e quali colori usare per il grafico (vengono usati i valori recuperati da getGraphColor())
+             * 
+             * Infine vengono creati altri 2 oggetti, uno per l'umidita' e uno per la temperatura,
+             * per indicare ai grafici che sono di tipo "linea",
+             * che devono essere creati nei corretti canvas (le temperature vanno in #tempgraph, le umidita' in #humgraph),
+             * che non devono visualizzare la legenda e che non devono fare animazioni durante l'aggiornamento dei dati
+             * > L'animazione e' poco gradevole a causa del continuo aggiornamento dei dati
+             * e che devono aspettarsi un aggiornamento dei loro dati
+             * 
+             * @todo Aggiungere un riscontro anche in caso la GET request non abbia successo
+             * @since 01_01
+            */
 
             rgb = this.getGraphColor(); // ottengo colore per grafici
 
@@ -151,10 +252,10 @@ const Graph = {
                     var charttemps = {
                         labels: v_timestamps, // timestamp asse x
                         datasets: [{
-                            backgroundColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 0.75)', // colore sfondo grafico
-                            borderColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 0.75)', // colore bordo del grafico
-                            hoverBackgroundColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1)',    // colore sfondo on hover ("passandoci sopra")
-                            hoverBorderColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1)',    // colore bordo on hover  ("passandoci sopra")
+                            backgroundColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 0.75)',    // colore sfondo grafico
+                            borderColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 0.75)',        // colore bordo del grafico
+                            hoverBackgroundColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1)',  // colore sfondo on hover ("passandoci sopra")
+                            hoverBorderColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1)',      // colore bordo on hover  ("passandoci sopra")
                             data: v_temps // temperature asse y
                         }],
                     };
@@ -163,10 +264,10 @@ const Graph = {
                     var charthums = {
                         labels: v_timestamps, // timestamp asse x
                         datasets: [{
-                            backgroundColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 0.75)', // colore sfondo grafico
-                            borderColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 0.75)', // colore bordo del grafico
-                            hoverBackgroundColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1)',    // colore sfondo on hover ("passandoci sopra")
-                            hoverBorderColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1)',    // colore bordo on hover  ("passandoci sopra")
+                            backgroundColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 0.75)',    // colore sfondo grafico
+                            borderColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 0.75)',        // colore bordo del grafico
+                            hoverBackgroundColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1)',  // colore sfondo on hover ("passandoci sopra")
+                            hoverBorderColor: 'rgba(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ', 1)',      // colore bordo on hover  ("passandoci sopra")
                             data: v_hums // umidita' asse y
                         }],
                     };
@@ -253,14 +354,31 @@ const Graph = {
         }
     },
     mounted: function () {
-        // a DOM caricato...
+        /**
+         * Quando il componente viene caricato viene richiamata la funzione makeGraphs() per creare i grafici,
+         * vengono aggiunti gli eventi per poter tornare alla pagina principale da goBack()
+         * e viene impostato il "loop infinito" con setInverval() per mantenere i grafici aggiornati
+         * ogni 10 secondi.
+         * 
+         * > setInterval restituisce un numero che serve a fermare il loop attraverso clearInterval
+         * 
+         * > makeGraphs() viene richiamato prima di setInterval perche' setInterval prima aspetta
+         * > che siano passati i millisecondi, poi richiama la funzione. 
+         * > Questo significa che l'utente non vedrebbe i grafici per 10 secondi
+        */
+        
         var graphfunc = this.makeGraphs; // salva la funzione per creare / aggiornare i grafici
-
         graphfunc();                     // richiama la funzione per creare immediatamente i grafici
-        this.goBack();                   // aggiunge il touch alla pagina
+
+        this.goBack();  // aggiunge gli eventi per tornare alla pagina principale
+        
         this.intervalId = setInterval(graphfunc, 10000);   // richiama la funzione per aggiornare i grafici ogni 10 secondi (aspetta 10 secondi -> richiama)
     },
     data: function () {
+        /**
+         * Restituisce i dati appartenenti al componente
+         * @return {object} oggetto con dati componente
+        */
         return {
             intervalId: "" // id dell'interval -> per fermarlo
         }

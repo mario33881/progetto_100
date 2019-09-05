@@ -3,19 +3,17 @@
  *
  * Converti tempo (formato "hh:mm tt") in timestamp
  *
- * @author Zenaro Stefano.
- * @since  1.0.0
+ * @author Stefano Zenaro (https://github.com/mario33881)
+ * @license MIT
+ * @since  01_01
 */
 
-/*
-t2ts -> time to timestamp
-*/
 
 function timeToTimestamp(t_time){
   /**
    * Converte tempo (formato "hh:mm tt") in timestamp
    *
-   * @since      1.0.0
+   * @since 01_01
    *
    * @param {string} t_time, tempo, formato "hh:mm tt" .
    * 
@@ -49,8 +47,8 @@ function timeToTimestamp(t_time){
 
 }
 
-/*
 
+/*
 function testTimeToTimestamp(){
   // Funzione da test
   var s_time = "06:58 PM" // stringa di prova

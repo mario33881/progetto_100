@@ -1,145 +1,194 @@
+/** 
+ * Script che definisce componente Vue con la pagina delle impostazioni
+ * 
+ * @since 01_01
+ * @author Stefano Zenaro (https://github.com/mario33881)
+ * @license MIT
+ * @todo Usare direttive vue per i timestamp delle rilevazioni
+*/
+
 const Options = {
     name: "options", // nome componente
-    template: `<div class="container">
+    template: `
+    <div class="container">
+        
+        <!-- Container con titolo e pulsante per tornare indietro -->
         <div class="row mb-0">
             <div class="col-sm-12 col-sm-offset-2 ">
-            <div class="panel panel-primary ">
-                <div class="panel-heading">
-                    <div class="center-text-vert">
-                        <button type="button" id="backbutton" class="btn btn-sm align-left mb-0 bg-color"> < </button>
-                        <h1 class="text-container title center"> Opzioni </h1>   
-                    </div>
-                </div>
-            </div>
-            </div>
-        </div>
-                    <hr>
-                    
-                    <h4 class="text-container"> Visualizzazione grafici</h4>
-                    <div class="container text-center">
-                    <!-- Qui vengono visualizzati tutti i messaggi errori/successo, ecco cosa viene creato con JS: -->
-                    <!-- <div id="alerts-container" class="fade show text-center" role="alert"></div> -->
-                    
-                    <!-- <h1 id="title">Impostazioni</h1> -->
-                    <span id="title"></span>
-                                        
-                    <!-- A cosa serve questa pagina -->
-                    <p>Da qui puoi selezionare quale parte di dati visualizzare nei grafici:</p>
-                    <ul>
-                        <li>Scegli se voler visualizzare tutti i dati o solo una parte</li>
-                        <li>se si vuole visualizzare una parte, selezionare date e tempi di limitazione</li>
-                    </ul>
-                </div>
-
-                <div class="container text-center">
-                    <!-- Pulsante -->
-                    <div class="switch">
-                        <label>
-                            Tutto
-                            <input v-on:click="isswitched = !isswitched" id="mySwitch" type="checkbox">
-                            <span class="lever"></span>
-                            Parziale
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Container con data iniziale e data finale -->
-                <div v-show="isswitched" class="container">
-                    <!-- Data iniziale -->
-                    <h3>Da:</h3>
-                    
-                    <!-- Selezione giorno-->
-                    <div class="md-form">
-                        <input type="text" id="fromdate" class="form-control datepicker">
-                        <label for="fromdate">Seleziona giorno</label>
-                    </div>
-
-                    <!-- Selezione ore minuti -->
-                    <div class="md-form" style="touch-action: none;">
-                        <input type="text" id="fromtime" class="form-control timepicker">
-                        <label for="fromtime">Seleziona ore/minuti</label>
-                    </div>
-
-                    <!-- Data finale -->
-                    <h3>A:</h3>
-                                        
-                    <!-- Selezione giorno-->
-                    <div class="md-form">
-                        <input type="text" id="todate" class="form-control datepicker">
-                        <label for="todate">Seleziona giorno</label>
-                    </div>
-
-                    <!-- Selezione ore minuti -->
-                    <div class="md-form" style="touch-action: none;">
-                        <input type="text" id="totime" class="form-control timepicker">
-                        <label for="totime">Seleziona ore/minuti</label>
-                    </div>
-
-                </div>
-
-                <div class="container text-center">
-                    <button id="submit" type="button" class="btn bg-color">Conferma modifiche</button>
-                </div>
-
-                <hr>
-
-                <h4 class="text-container">Colore interfaccia</h4>
-                <span id="colortitle"></span>
-
-                <p class="text-center"> Premi sul quadrato per selezionare il colore da usare per l'interfaccia</p>
-                <div class="container">
-                    <div class="row">
-                        <div v-for="color in colors" style="" class="col-2">
-                            <div v-on:click="sendColor(color.color_name)" class="square" v-bind:style="{ 'background-color': color.color_hex }">
-                                <div class="content">{{ checkScreen(color.color_name) }}</div>
-                            </div>
+                <div class="panel panel-primary ">
+                    <div class="panel-heading">
+                        <div class="center-text-vert">
+                            <button type="button" id="backbutton" class="btn btn-sm align-left mb-0 bg-color"> < </button>
+                            <h1 class="text-container title center"> Opzioni </h1>   
                         </div>
                     </div>
                 </div>
-                <div class="container text-center">
-                    <button id="submit" type="button" v-on:click="moreColors" class="btn bg-color">Mostra altri colori</button>
-                </div>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <!-- Sezione con opzioni timestamp grafici -->
+        <h4 class="text-container"> Visualizzazione grafici</h4>
+        
+        <!-- container che spiega cosa si puo' fare in questa sezione -->
+        <div class="container text-center">
+            <!-- Qui vengono visualizzati tutti i messaggi errori/successo, ecco cosa viene creato con JS: -->
+            <!-- <div id="alerts-container" class="fade show text-center" role="alert"></div> -->
 
-                <hr>
+            <span id="title"></span>
+                                        
+            <!-- testo -->
+            <p>Da qui puoi selezionare quale parte di dati visualizzare nei grafici:</p>
+            <ul>
+                <li>Scegli se voler visualizzare tutti i dati o solo una parte</li>
+                <li>se si vuole visualizzare una parte, selezionare date e tempi di limitazione</li>
+            </ul>
+        </div>
 
-                <h4 class="text-container">Tipo planimetria</h4>
-                <p class="text-center"> Premi sulla planimetria che vorresti nella pagina principale</p>
-                <div class="row">
-                    <div v-for="(map, index) in maps" v-bind:class="mapclass(map)">
-                        <div v-on:click="sendmap(map)" v-html="mapcontent(map)"></div>
+        <!-- container switch -->
+        <div class="container text-center">
+            <!-- Switch -->
+            <div class="switch">
+                <label>
+                    Tutto
+                        <input v-on:click="isswitched = !isswitched" id="mySwitch" type="checkbox">
+                        <span class="lever"></span>
+                    Parziale
+                </label>
+            </div>
+        </div>
+
+        <!-- Container con i datepicker e timepicker -->
+        <div v-show="isswitched" class="container">
+            <!-- Data iniziale -->
+            <h3>Da:</h3>
+                    
+            <!-- Selezione giorno-->
+            <div class="md-form">
+                <input type="text" id="fromdate" class="form-control datepicker">
+                <label for="fromdate">Seleziona giorno</label>
+            </div>
+
+            <!-- Selezione ore minuti -->
+            <div class="md-form" style="touch-action: none;">
+                <input type="text" id="fromtime" class="form-control timepicker">
+                <label for="fromtime">Seleziona ore/minuti</label>
+            </div>
+
+            <!-- Data finale -->
+            <h3>A:</h3>
+                                        
+            <!-- Selezione giorno-->
+            <div class="md-form">
+                <input type="text" id="todate" class="form-control datepicker">
+                <label for="todate">Seleziona giorno</label>
+            </div>
+
+            <!-- Selezione ore minuti -->
+            <div class="md-form" style="touch-action: none;">
+                <input type="text" id="totime" class="form-control timepicker">
+                <label for="totime">Seleziona ore/minuti</label>
+            </div>
+
+        </div>
+
+        <!-- container con pulsante submit timestamp -->
+        <div class="container text-center">
+            <button id="submit" type="button" class="btn bg-color">Conferma modifiche</button>
+        </div>
+
+        <!-- Fine sezione timestamp -->
+
+        <hr>
+
+        <!-- Sezione colore UI -->
+
+        <h4 class="text-container">Colore interfaccia</h4>
+        <span id="colortitle"></span>
+
+        <p class="text-center"> Premi sul quadrato per selezionare il colore da usare per l'interfaccia</p>
+        
+        <!-- Container quadrati con i colori selezionabili -->
+        <div class="container">
+            <div class="row">
+                <div v-for="color in colors" style="" class="col-2">
+                    <div v-on:click="sendColor(color.color_name)" class="square" v-bind:style="{ 'background-color': color.color_hex }">
+                        <div class="content">{{ checkScreen(color.color_name) }}</div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- container pulsante che mostra altri colori -->
+        <div class="container text-center">
+            <button id="submit" type="button" v-on:click="moreColors" class="btn bg-color">Mostra altri colori</button>
+        </div>
+        
+        <!-- Fine sezione colore UI -->
+
+        <hr>
+
+        <!-- Sezione selezione planimetria -->
+
+        <h4 class="text-container">Tipo planimetria</h4>
+        <p class="text-center"> Premi sulla planimetria che vorresti nella pagina principale</p>
+        <div class="row">
+            <div v-for="(map, index) in maps" v-bind:class="mapclass(map)">
+                <div v-on:click="sendmap(map)" v-html="mapcontent(map)"></div>
+            </div>
+        </div>
+        
+        <!-- Fine sezione selezione planimetria -->
+        
+        <hr>
+        
+        <!-- Sezione grafico con spazio disco sistema -->
+        <h4 class="text-container">Spazio disco</h4>
+        
+        <!-- container grafico -->
+        <div class="container">
+            <canvas id="diskgraph"></canvas>
+        </div>
                 
-                <hr>
-                
-                <h4 class="text-container">Spazio disco</h4>
-                <div class="container">
-                    <canvas id="diskgraph"></canvas>
-                </div>
-                
-                <hr>
-                
-                <h4 class="text-container">Potenza ricevuta dai nodi</h4>
-                <table class="table table-borderless">
-                    <thead>
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col">Nodo</th>
-                            <th scope="col">RSSI [dBm]</th>
-                            
-                        </tr>
-                    </thead>
-                    <tbody id="rssitable">
-                        <tr v-for="data in nodes_data">
-                            <td><span v-html="rssiimg(data.rssi)"></span></td><td>{{data.id_node}}</td><td>{{data.rssi}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>`,
+        <!-- Fine sezione grafico spazio disco -->
+
+        <hr>
+        
+        <!-- Sezione visualizzazione RSSI -->
+        <h4 class="text-container">Potenza ricevuta dai nodi</h4>
+        
+        <!-- tabella con RSSI-->
+        <table class="table table-borderless">
+            <!-- Tracciato record -->
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">Nodo</th>
+                    <th scope="col">RSSI [dBm]</th>                
+                </tr>
+            </thead>
+
+            <!-- Record -->
+            <tbody id="rssitable">
+                <tr v-for="data in nodes_data">
+                    <td><span v-html="rssiimg(data.rssi)"></span></td><td>{{data.id_node}}</td><td>{{data.rssi}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Fine sezione visualizzazione RSSI -->
+    </div>`,
     methods: {
-        // ------------- TODO: SOSTITUISCI CON v-model ------------------------
+        // ------------- TODO: SOSTITUISCI CON v-on:change ------------------------
         changeFromdate: function () {
-            /* Imposta evento sull'elemento fromdate per salvare la data "da" in input */
+            /** 
+             * Imposta evento "change" sull'elemento #fromdate per salvare la data "da" in input
+             * 
+             * @todo Usare direttiva vue e eliminare la funzione:
+             *       > v-on:change="fromdate=$event.target.value" sull'elemento dovrebbe bastare
+             * @since 01_01
+            */
 
             var data = this; // salvo oggetto componente per modificare dati in data
             var fromdate_el = document.getElementById("fromdate"); // seleziona elemento #fromdate
@@ -154,7 +203,13 @@ const Options = {
             })
         },
         changeFromtime: function () {
-            /* Imposta evento sull'elemento fromtime per salvare ora/minuti "da" in input */
+            /** 
+             * Imposta evento "change" sull'elemento #fromtime per salvare ora/minuti "da" in input
+             * 
+             * @todo Usare direttiva vue e eliminare la funzione:
+             *       > v-on:change="fromtime=$event.target.value" sull'elemento dovrebbe bastare
+             * @since 01_01
+            */
 
             var data = this; // salvo oggetto componente per modificare dati in data
             var fromtime_el = document.getElementById("fromtime"); // seleziona elemento #fromtime
@@ -169,7 +224,13 @@ const Options = {
             })
         },
         changeTodate: function () {
-            /* Imposta evento sull'elemento todate per salvare la data "a" in input */
+            /** 
+             * Imposta evento "change" sull'elemento #todate per salvare la data "a" in input
+             * 
+             * @todo Usare direttiva vue e eliminare la funzione:
+             *       > v-on:change="todate=$event.target.value" sull'elemento dovrebbe bastare
+             * @since 01_01
+            */
 
             var data = this; // salvo oggetto componente per modificare dati in data
             var todate_el = document.getElementById("todate"); // seleziona elemento #todate
@@ -184,7 +245,13 @@ const Options = {
             })
         },
         changeTotime: function () {
-            /* Imposta evento sull'elemento todate per salvare ora/minuti "a" in input */
+            /**
+             * Imposta evento "change" sull'elemento todate per salvare ora/minuti "a" in input 
+             * 
+             * @todo Usare direttiva vue e eliminare la funzione:
+             *       > v-on:change="totime=$event.target.value" sull'elemento dovrebbe bastare
+             * @since 01_01
+            */
 
             var data = this; // salvo oggetto componente per modificare dati in data
             var totime_el = document.getElementById("totime"); // seleziona elemento #totime
@@ -198,11 +265,26 @@ const Options = {
                 data.totime = totime_el.value; // imposta in data del componente il nuovo valore nel <input>
             })
         },
-        // ------------- /TODO: SOSTITUISCI CON v-model ------------------------
+        // ------------- /TODO: SOSTITUISCI CON v-on:change ------------------------
         showAlert: function (t_text, t_status) {
-            /* Questa funzione visualizza l'alert/messaggio con la struttura :
-            
-                <div id="alerts-container" class="fade show text-center alert alert-<$ t_status $>" role="alert"> <$ t_text $> </div>
+            /** 
+             * Questa funzione visualizza l'alert/messaggio con la struttura :
+             * <div id="alerts-container" class="fade show text-center alert alert-<$ t_status $>" role="alert"> <$ t_text $> </div>
+             * 
+             * Viene creato un div con id "alerts-container", attributo "role" = "alert", 
+             * classi "fade show text-center fixed-top alert" 
+             * e infine una classe "alert-" + t_status che dipende dal parametro passato alla funzione
+             * 
+             * @param {string} t_text Testo da visualizzare nell'alert
+             * @param {string} t_status Status di un'operazione, modifica colore alert
+             * @example 
+             * // crea elemento <div id="alerts-container" 
+             * // class="fade show text-center alert alert-success" role="alert"> 
+             * // questo e' un testo di prova 
+             * // </div> 
+             * // prima dell'elemento #title
+             * showAlert("questo e' un testo di prova", "success")
+             * @since 01_01 
             */
 
             alert_div = document.createElement("div"); // creo un div contenente l'alert
@@ -222,16 +304,52 @@ const Options = {
             }
         },
         sendTimestamp: function () {
-            /* Manda il timestamp nelle impostazioni sul DB */
+            /**
+             * Manda il timestamp nelle impostazioni sul DB
+             * 
+             * Se isswitched e' falso significa che
+             * lo switch non e' attivo, quindi l'utente vuole
+             * vedere tutti i dati delle rilevazioni
+             * quindi viene fatta una GET request
+             * alla pagina /static/php/sendopt.php
+             * con mintime = 0 e maxtime = 0.
+             * 
+             * Se lo switch e' attivo
+             * l'utente vuole mandare un range preciso di timestamp:
+             * viene ottenuto il timestamp dai datepicker
+             * > Date.parse() restituisce il timestamp in millisecondi, 
+             * > il risultato viene diviso per 1000
+             * 
+             * e i timestamp dei timepicker vengono ottenuti usando
+             * la funzione timeToTimestamp() definita nello script "/static/js/timestamp/t2ts.js"
+             * 
+             * Il timestamp iniziale e finale vengono calcolati sommando
+             * i timestamp dei datepicker e dei timepicker.
+             * 
+             * Viene verificato che entrambe i valori non siano nulli:
+             * se sono nulli viene creato un alert con showAlert() indicando l'errore all'utente
+             * 
+             * Poi viene verificato che il timestamp iniziale sia minore di quello finale:
+             * se non e' così vuol dire che l'utente ha invertito le date
+             * e viene creato un alert di errore con showAlert()
+             * 
+             * Se le due condizioni sopra non sono vere viene inviata una GET request
+             * a "/static/php/sendopt.php" che ha come mintime il timestamp iniziale
+             * e maxtime il timestamp finale
+             * 
+             * @todo Usare POST request al posto della GET request
+             * @todo Gestire errori durante request
+             * @since 01_01
+            */
 
             var data = this; // salvo this dentro a data
             if (data.isswitched) {
                 // switch attivo -> dati parziali
                 var fromdateVal = Date.parse(data.fromdate) / 1000; // vue data "fromdate" -> timestamp [ms] -> timestamp [s]
-                var fromtimeVal = timeToTimestamp(data.fromtime); // usa funzione in "/static/js/touch/t2ts.js" per convertire vue data "fromtime" "hh:mm tt" -> secondi
+                var fromtimeVal = timeToTimestamp(data.fromtime); // usa funzione in "/static/js/timestamp/t2ts.js" per convertire vue data "fromtime" "hh:mm tt" -> secondi
 
                 var todateVal = Date.parse(data.todate) / 1000; // vue data "todate" -> timestamp [ms] -> timestamp [s]
-                var totimeVal = timeToTimestamp(data.totime); // usa funzione in "/static/js/touch/t2ts.js" per convertire vue data "totime" "hh:mm tt" -> secondi
+                var totimeVal = timeToTimestamp(data.totime); // usa funzione in "/static/js/timestamp/t2ts.js" per convertire vue data "totime" "hh:mm tt" -> secondi
 
                 var fromtimestamp = fromdateVal + fromtimeVal; // timestamp iniziale
                 var totimestamp = todateVal + totimeVal;       // timestamp finale
@@ -276,19 +394,39 @@ const Options = {
             }
         },
         goBack: function () {
-            /* Imposta touch per tornare indietro */
+            /**
+             * Questa funzione aggiunge gli eventi per tornare alla pagina principale: 
+             * - clic del pulsante #backbutton 
+             * - touch alla pagina (swipe verso sinistra)
+             * 
+             * Viene richiamata da mounted()
+             * @since 01_01
+            */
+
             if (boold) {
                 console.log("aggiungo il touch");
             }
 
-            /* Pulsante per tornare indietro */
-            var backbutton = document.getElementById("backbutton");
-            backbutton.addEventListener("click", function () {
-                window.location.href = "/#/";
+            // Evento pulsante per tornare indietro
+            var backbutton = document.getElementById("backbutton");  // seleziona pulsante
+
+            backbutton.addEventListener("click", function () {       // aggiungi evento "click"
+            /* Torna alla pagina principale */
+                window.location.href = "/#/";                        // che torna alla home
             })
 
-            var hammertime = new Hammer(document.getElementById('app'));
+            // evento swipe per tornare indietro
+            var hammertime = new Hammer(document.getElementById('app'));  // oggetto Hammer su elemento #app -> tutta la pagina
+
             hammertime.on('swipe', function (ev) {
+                /**
+                 * Viene aggiunto l'evento "swipe"
+                 * all'elemento legato all'oggetto Hammer (#app)
+                 * 
+                 * @param {object} ev oggetto con proprieta' relative all'evento
+                 * @since 01_01
+                */
+
                 if (boold) {
                     console.log("delta X: ", ev.deltaX);
                 }
@@ -300,7 +438,23 @@ const Options = {
             });
         },
         makeRssiTable: function () {
-            /* Ottiene RSSI e lo mette dentro a "data" del componente (se non ci sono errori di connessione al DB) */
+            /**
+             * Ottiene json RSSI e lo memorizza nella variabile nodes_data in "data" del componente 
+             * (se non ci sono errori di connessione al DB) 
+             * 
+             * La funzione esegue una GET request alla pagina
+             * "/static/php/getrssi.php" per ottenere in JSON
+             * i valori RSSI per ogni nodo
+             * 
+             * @todo Dividere il return dalla visualizzazione:
+             *       attualmente PHP restituisce un elemento SVG
+             *       con il testo relativo all'errore. (se presente)
+             *       PHP dovrebbe preoccuparsi solamente
+             *       di restituire l'errore al client,
+             *       il client pensera' alla visualizzazione 
+             * @since 01_01
+            */
+
             axios.get("/static/php/getrssi.php").then((resp) => {
                 if (boold) {
                     console.log("Ho ricevuto:");
@@ -316,7 +470,20 @@ const Options = {
             })
         },
         rssiimg: function (rssi) {
-            /* Funzione richiamata dal v-for per cambiare immagine */
+            /**
+             * Funzione richiamata nel v-for nella sezione
+             * della visualizzazione dei RSSI 
+             * per cambiare immagine in base al livello di potenza del segnale
+             * 
+             * La funzione restituisce una stringa contenente
+             * l'elemento <img> che punta al corretto documento SVG
+             * e la direttiva v-html si occupa di usarlo nell'interfaccia
+             * 
+             * @param {integer} rssi Valore del livello di potenza del segnale ricevuto
+             * @return {string} imgtag Elemento <img> con src che varia in base a rssi
+             * @since 01_01
+            */
+
             imgtag = "<img class='img-fluid' ";
             if (rssi > -60) {
                 imgtag += "src='/static/img/rssi/green.svg'>";
@@ -336,7 +503,25 @@ const Options = {
             return imgtag;
         },
         spaceOnDisk: function () {
-            /* Visualizza grafico dello spazio su disco */
+            /** 
+             * Visualizza grafico dello spazio su disco
+             * 
+             * La funzione esegue una GET request alla pagina
+             * "/static/php/diskinfo.php" per ottenere il JSON con
+             * le informazioni relative allo spazio libero/occupato,
+             * seleziona l'elemento che conterra' il grafico,
+             * divide le unita' di misura dai valori
+             * e infine viene creato con chart.js il grafico
+             * a ciambella 
+             * (colore rosso/rosa per spazio libero,
+             *  azzurro spazio occupato,
+             *  legenda che visualizza l'unita' di misura di entrambe i valori
+             *  )
+             * 
+             * @since 01_01
+             * @todo Gestire errori durante GET request
+            */
+
             axios.get("/static/php/diskinfo.php").then((resp) => {
                 if (boold) {
                     console.log("Ho ricevuto queste informazioni disco:");
@@ -374,7 +559,25 @@ const Options = {
             })
         },
         getColors: function (num) {
-            /* Ottiene tanti colori quanti sono specificati dal parametro num (se non ci sono errori di connessione al DB) */
+            /**
+             * Ottiene tanti colori quanti sono specificati dal parametro num 
+             * (se non ci sono errori di connessione al DB)
+             * 
+             * La funzione esegue una GET request per ottenere
+             * il JSON con un certo numero di colori 
+             * (parametro "n" indica il numero di colori desiderato)
+             * 
+             * Se la risposta contiene un elemento SVG significa 
+             * che c'e' stato un errore di connessione al database,
+             * altrimenti il JSON viene salvato nella variabile colors.
+             *  
+             * @param {integer|string} num numero di colori da visualizzare
+             * @todo Se c'e' un errore PHP dovrebbe restituire solo quello
+             *       e la frontend si occupera' di visualizzarlo.
+             *       Attualmente PHP restituisce un SVG con l'errore di connessione al DB
+             * @since 01_01
+            */
+
             axios.get("/static/php/getcolors.php?n=" + num).then(resp => {
                 if (boold) {
                     console.log("Ho ricevuto questi colori:");
@@ -391,7 +594,18 @@ const Options = {
             })
         },
         moreColors: function () {
-            /* Permette di visualizzare altri 12 colori ogni volta che il pulsante viene premuto */
+            /** 
+             * Permette di visualizzare altri 12 colori ogni volta che il pulsante viene premuto
+             * 
+             * La funzione incrementa di 12 la variabile "num" in "data"
+             * e poi passa la variabile alla funzione getColors()
+             * per ottenere quel numero di colori da visualizzare
+             * nell'interfaccia
+             *  
+             * @see getColors(num) Definisce in "colors" il JSON con i colori selezionabili 
+             * @since 01_01
+            */
+
             if (boold) {
                 console.log("Pulsante 'altri colori' premuto");
             }
@@ -400,7 +614,20 @@ const Options = {
             this.getColors(this.num); // richiedi i colori nuovi per visualizzarli
         },
         sendColor: function (color) {
-            /* Un quadrato con il colore e' stato premuto -> mandalo al DB */
+            /**
+             * Un quadrato con il colore e' stato premuto -> mandalo al DB
+             * 
+             * La funzione esegue una GET request alla pagina "/static/php/sendcolor.php"
+             * per mandare il colore selezionato dall'utente alla backend.
+             * > "color" e' il nome del parametro dello script PHP
+             * 
+             * @since 01_01
+             * @todo Usare showAlert() per creare l'alert 
+             *       (non era stata usata per visualizzare l'alert e poi aggiornare la pagina, 
+             *        ma e' comunque possibile fare entrambe le cose richiamando la funzione)
+             * @todo Usare POST request al posto di GET request
+             * @todo Gestire errori durante GET request
+            */
 
             if (boold) {
                 console.log("Hai cliccato il colore ", color);
@@ -433,7 +660,15 @@ const Options = {
             )
         },
         checkScreen: function (color) {
-            /* Controlla se lo schermo e' troppo piccolo per aggiungere il testo dentro ai riquadri */
+            /** 
+             * Controlla se lo schermo e' troppo piccolo per 
+             * aggiungere il testo dentro ai riquadri 
+             * 
+             * @param {string} color Nome del colore
+             * @return {string} color Nome del colore o ""
+             * @since 01_01
+            */
+
             var checksize = window.matchMedia("(max-width: 800px)"); // controllo se larghezza schermo < 800px 
             if (checksize.matches) {
                 // se e' minore di 800px
@@ -442,7 +677,15 @@ const Options = {
             return color;
         },
         getmaps: function () {
-            /* Ottiene le mappe dal file e aggiunge "" per i separatori (div col-2) */
+            /** 
+             * Ottiene le mappe dal file e aggiunge "" per i separatori (div col-2) 
+             * 
+             * Per poter aggiungere nella frontend uno spazio tra una planimetria
+             * e l'altra vengono aggiunte delle stringhe vuote all'interno del JSON restituito
+             * 
+             * @todo Gestire errori durante la GET request
+             * @since 01_04 (https://github.com/mario33881/progetto_100/commit/a473a44d6d67dc67d161879192d19a8703861b3c)
+            */
             axios.get("/static/php/showmaps.php").then(resp => {
                 if (boold){
                     console.log("Ho ricevuto queste mappe:");
@@ -473,24 +716,38 @@ const Options = {
             })
         },
         mapclass : function (map){
-            /* Gestisce la classe della mappa, se map == "" (separatore),
-               la classe e' 'col-2', altrimenti 'col-5' e 'text-center'
+            /**  
+             * Gestisce la classe della mappa, se map == "" (separatore),
+             * la classe e' 'col-2', altrimenti 'col-5' e 'text-center'
+             * 
+             * La funzione getmaps() si e' occupata di aggiungere
+             * stringhe vuote al JSON per creare una colonna che separa
+             * due planimetrie.
+             * 
+             * @param {object|string} map Stringa vuota o oggetto contenente informazioni planimetria
+             * @return {string} mapclass Classe del div che conterra' la planimetria e il suo nome
+             * @since 01_04 (https://github.com/mario33881/progetto_100/commit/a473a44d6d67dc67d161879192d19a8703861b3c)
             */
             
-            mapclass = 'col-2';
+            mapclass = 'col-2';  // se map e' "", serve colonna di 2/12 che separa le planimetrie
             
             if (map != ""){
-                mapclass = 'col-5 text-center';
+                mapclass = 'col-5 text-center';  // altrimenti serve una colonna di 5/12 per contenere la planimetria
             }
             return mapclass;
 
         },
         mapcontent: function (map){
-            /* Gestisce il contenuto del div delle mappe
-               Se map != "" il contenuto e' un div che ha un paragrafo con il nome del file
-               e img con la mappa,
-
-               altrimenti il div viene lasciato vuoto
+            /** 
+             * Gestisce il contenuto del div delle mappe
+             * Se map != "" il contenuto e' un div che ha un paragrafo con il nome del file
+             * e img con la mappa,
+             * 
+             * altrimenti il div viene lasciato vuoto
+             * 
+             * @param {object|string} map Stringa vuota o oggetto contenente informazioni planimetria
+             * @return {string} div Stringa vuota o contenente il div con il nome della planimetria e un <img> con src corretto
+             * @since 01_04 (https://github.com/mario33881/progetto_100/commit/a473a44d6d67dc67d161879192d19a8703861b3c)
             */
 
             div = ""
@@ -501,15 +758,53 @@ const Options = {
             return div
         },
         sendmap: function (map){
-            /* Gestisce click/touch delle mappe
-               quando una mappa viene premuta viene effettuata una get request
-               per salvare nel database la scelta dell'utente
+            /**
+             * Gestisce click/touch delle mappe
+             * quando una mappa viene premuta viene effettuata una get request
+             * per salvare nel database la scelta dell'utente
+             * 
+             * @param {string} map Nome planimetria
+             * @todo Gestire eventuali errori da PHP
+             * @since 01_04 (https://github.com/mario33881/progetto_100/commit/a473a44d6d67dc67d161879192d19a8703861b3c)
             */
+
             axios.get("/static/php/sendmap.php?map=" + map.name);
             this.showAlert("Hai selezionato la mappa '" + map.name + "'", "success");
         }
     },
     mounted: function () {
+        /**
+         * Quando viene caricato il componente
+         * viene richiamata la funzione getColors passandogli il parametro num (6 in origine):
+         * la variabile colors contiene il JSON che verra' usato per visualizzare i colori
+         * selezionabili dall'utente.
+         * 
+         * Poi viene richiamata la funzione goBack() per permettere all'utente
+         * di tornare alla pagina principale premendo il pulsante 
+         * o facendo uno swipe.
+         * 
+         * Vengono inizializzati i datepicker e i timepicker,
+         * e gli viene aggiunto l'evento "change" per riconoscere
+         * quando l'utente seleziona/modifica un input.
+         * 
+         * Viene aggiunto l'evento click sul pulsante per confermare
+         * le modifiche del timestamp per poter richiamare sendTimestamp()
+         * 
+         * Viene richiamata la funzione makeRssiTable()
+         * per ottenere (e mantenere aggiornato con setInterval)
+         * il JSON con le informazioni dei RSSI dei nodi,
+         * verra' memorizzato nella variabile nodes_data.
+         * 
+         * Viene richiamata la funzione spaceOnDisk() che crea
+         * il grafico con lo spazio libero/occupato sul disco di sistema
+         * 
+         * e infine viene richiamata la funzione getmaps()
+         * per ottenere il JSON relativo alle planimetrie selezionabili
+         * dall'utente: verranno memorizzate nella variabile maps
+         * e usate nella frontend  
+         * 
+        */
+
         this.getColors(this.num); // ottieni i 6 colori iniziali
         this.goBack(); // imposto il touch
 
@@ -543,6 +838,10 @@ const Options = {
 
     },
     data: function () {
+        /**
+         * Restituisce oggetto con le variabili del componente
+         * @return {object} Oggetto contenente le variabili del componente
+         */
         return {
             isswitched: false, // switch attivo o no?
             fromdate: "",      // calendario da

@@ -13,12 +13,12 @@ Puoi leggere piu' informazioni riguardo il progetto [nella wiki qui](https://git
 ---
 
 ## Sections
-* [Getting started](#getting-started-(brief-instructions))
+* [Getting started](getting-started-brief-instructions)
     * [Node MCU](#node-mcu)
     * [Raspberry pi](#raspberry-pi)
 * [Software map](#software-map)
 * [Changelog](#changelog)
-* [To do / ideas](#to-do-/-ideas)
+* [To do / ideas](#to-do--ideas)
 
 ## Getting started (brief instructions)
 
