@@ -79,6 +79,16 @@ Work in progress
 
 ## Changelog
 
+**2019-09-09 01_07:** <br>
+Fixes:
+* added the missing variables for CSS _cm_datepicker.php 
+* the autoinstall script also tries to install mysql using ```apt-get install default-mysql-server``` because ```apt-get install mysql-server``` errors in latest raspbian version 
+    > [More infos here](https://mariadb.com/newsroom/press-releases/mariadb-replaces-mysql-as-the-default-in-debian-9/)
+* saveiptables() wasn't called in the autoinstall script
+
+Other:
+* better documentation
+
 **2019-04-25 01_06:** <br/>
 Features:
 * Now you can add "x + room" classes to elements in the plan to make them clickable
