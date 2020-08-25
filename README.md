@@ -3,10 +3,10 @@
 ---
 ---
 
-## PROGETTO201
-Nuova versione! Accedi alla pagina del progetto201 qui! Link: [progetto201.github.io](https://progetto201.github.io/)
+## PROGETTO201 - successore del progetto 100+100
+Nuova versione! Accedi alla pagina della wiki del progetto201 qui! Link: [progetto201.github.io](https://progetto201.github.io/)
 
-New version! check out progetto201 here: [progetto201.github.io](https://progetto201.github.io/)
+New version! check out progetto201's wiki here: [progetto201.github.io](https://progetto201.github.io/)
 <p align="center">
     <img src="https://github.com/progetto201/progetto201.github.io/raw/master/_docs/home.png">
 </p>
